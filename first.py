@@ -12,14 +12,15 @@ def github_activity(username):
         response = requests.get(url)
 
         if response.status_code == 200:
-            events_data = requests.get(events_url).json()
+            events_response = requests.get(events_url, timeout=10)
 
-            if events_data == []:
-                print(f"No recent activity found for user '{username}'.")
-                
+            if events_response.status_code != 200:
+                print(f"Failed to retrieve events. Status code: {events_response.status_code}")
+            elif events_response.json() == []:
+                print(f"No events found for user '{username}'.")
             else:
                 rows = []
-                for i in events_data:
+                for i in events_response.json():
                     rows.append([
                     i["type"],
                     i["repo"]["name"],
