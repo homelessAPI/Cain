@@ -6,10 +6,13 @@ import './App.css'
 
 function App() {
   const [username, setUsername] = useState("")
+  const [events, setEvents] = useState([])
+  const [error, setError] = useState(null)
 
   async function handleSubmit(e) {
     e.preventDefault()
-    const user = {
+    try {
+      const user = {
       username: username
     }
 
@@ -24,6 +27,19 @@ function App() {
     )
     const data = await response.json()
     console.log(data)
+
+    if (!response.ok) {
+      setEvents([])
+      setError(data.detail || "An error occurred while fetching events.")
+    } else {
+      setError(null)
+      setEvents(data.events)
+    }
+    }
+    catch (error) {
+      setEvents([])
+      setError("An error occurred while fetching events.")
+    }
   }
 
   return (
@@ -34,6 +50,16 @@ function App() {
           <input type="text" placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)}/>
           <button onClick={handleSubmit}>Submit</button>
         </fieldset>
+      </div>
+      <div className="output">
+        {error && <p className='error'>{error}</p>}
+        <ul>
+          {events.map((event, index) => (
+            <li key={index}>
+              {event.type} - {event.repository}
+            </li>
+          ))}
+        </ul>
       </div>
     </>
   )
