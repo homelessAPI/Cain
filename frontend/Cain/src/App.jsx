@@ -44,22 +44,44 @@ function App() {
 
   return (
     <>
+    <nav className='navbar'>
+      <h1 className='Site-Name'>Cain</h1>
+    </nav>
       <div className="user-input">
-        <fieldset>
+        <fieldset className='input-fieldset'>
           <legend>Input</legend>
-          <input type="text" placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)}/>
+          <input type="text" className='username' placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)}/>
+          <br />
           <button onClick={handleSubmit}>Submit</button>
         </fieldset>
       </div>
       <div className="output">
-        {error && <p className='error'>{error}</p>}
-        <ul>
-          {events.map((event, index) => (
-            <li key={index}>
-              {event.type} - {event.repository}
-            </li>
-          ))}
-        </ul>
+        <fieldset className='output-fieldset'>
+          <legend>Output</legend>
+          {error && <p className='error'>{error}</p>}
+          <table className='events-list'>
+            <thead>
+              <tr className='events-list-header'>
+                <th>Event Type</th>
+                <th>Repository</th>
+                <th>Repository URL</th>
+                <th>Created At</th>
+                <th>Public</th>
+              </tr>
+            </thead>
+            <tbody>
+              {events.map((event,index) => (
+                <tr key={index}>
+                  <td>{event.type}</td>
+                  <td>{event.repository}</td>
+                  <td>{event.repository_url}</td>
+                  <td>{event.created_at}</td>
+                  <td>{event.public ? 'Yes' : 'No'}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </fieldset>
       </div>
     </>
   )

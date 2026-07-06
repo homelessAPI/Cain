@@ -1,0 +1,57 @@
+* {
+  color: rgb(0, 0, 0);
+}
+.navbar {
+  background-color: #0f0a15;
+  padding: 1rem;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.navbar h1 {
+  color: #fff;
+  margin: 0;
+}
+
+.input-fieldset, .output-fieldset {
+  border: 1px solid #ccc;
+  padding: 2rem;
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.input-fieldset legend, .output-fieldset legend {
+  font-weight: bold;
+  color: #0c0123;
+}
+
+.input-fieldset input, .output-fieldset input {
+  width: 50%;
+  height: 2rem;
+  padding: 0.5rem;
+  margin-bottom: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  color: #0c0123;
+}
+
+.input-fieldset button, .output-fieldset button {
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+}
+
+.output-fieldset table {
+  width: 100%;
+}
+
+.output-fieldset th, .output-fieldset td {
+  padding: 0.5rem;
+  text-align: left;
+  border: 1px solid #ccc;
+}
+
+.output-fieldset .events-list-header {
+  background-color: #120e26;
+  color: #fff;
+}
