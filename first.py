@@ -19,22 +19,21 @@ def github_activity(username):
             elif events_response.json() == []:
                 print(f"No events found for user '{username}'.")
             else:
-                rows = []
+                events = []
                 for i in events_response.json():
-                    rows.append([
-                    i["type"],
-                    i["repo"]["name"],
-                    i["repo"]["url"],
-                    i["created_at"],
-                    i["public"]
-                ])
+                    events.append({
+                        "type": i["type"],
+                        "repository": i["repo"]["name"],
+                        "repository_url": i["repo"]["url"],
+                        "created_at": i["created_at"],
+                        "public": i["public"]
+                })
 
-                header = ["Event Type", "Repository", "Repository_URL", "Created At", "Public"]
-                print(tabulate(rows, headers=header, tablefmt="grid"))
+                return {"events": events}
 
         else:
             print(f"Failed to retrieve data for user. Status code: {response.status_code}")
-    except Exception as e:
+    except requests.RequestException as e:
         print(f"An error occurred while making the API request: {e}")
 
 if __name__ == "__main__":

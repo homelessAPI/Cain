@@ -1,6 +1,6 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from tabulate import tabulate
+from dataControl.models import User
 import requests
 
 app = FastAPI()
@@ -8,13 +8,15 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["http://localhost:5174"],
     allow_credentials=True,
-    allow_methods=["POST"],
+    allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
-@app.get("/")
-def main(username: str):
+@app.post("/")
+def main(user: User):
+    username = user.username
+    print(f"Received username: {username}")
     url = f"https://api.github.com/users/{username}"
     events_url = f"https://api.github.com/users/{username}/events"
     repos_url = f"https://api.github.com/users/{username}/repos"
@@ -26,29 +28,39 @@ def main(username: str):
             events_response = requests.get(events_url, timeout=10)
 
             if events_response.status_code != 200:
-                raise HTTPException(f"Failed to retrieve events.", status_code=events_response.status_code)
+                raise HTTPException(
+                    status_code=events_response.status_code,
+                    detail="Failed to retrieve events.")
             elif events_response.json() == []:
-                raise HTTPException(f"No events found for user '{username}'.", status_code=404)
+                raise HTTPException(
+    status_code=404,
+    detail=f"No events found for user '{username}'."
+)
             else:
-                rows = []
+                events = []
                 for i in events_response.json():
-                    rows.append([
-                    i["type"],
-                    i["repo"]["name"],
-                    i["repo"]["url"],
-                    i["created_at"],
-                    i["public"]
-                ])
+                    events.append({
+                    "type": i["type"],
+                    "repository": i["repo"]["name"],
+                    "repository_url": i["repo"]["url"],
+                    "created_at": i["created_at"],
+                    "public": i["public"]
+                })
 
                 header = ["Event Type", "Repository", "Repository_URL", "Created At", "Public"]
-                table = tabulate(rows, headers=header, tablefmt="grid")
-                return {"table": table}
+               
+                return {"events": events}
 
         else:
-            raise HTTPException(f"Failed to retrieve data for user.", status_code={response.status_code})
+            raise HTTPException(
+                status_code=response.status_code,
+                detail="Failed to retrieve data for user."
+)
     except Exception as e:
-        raise HTTPException(f"An error occurred while making the API request: {e}")
-
+        raise HTTPException(
+            status_code=500,
+            detail=f"An error occurred: {e}"
+    )
     return {"message": "Hello from backend!"}
 
 if __name__ == "__main__":
