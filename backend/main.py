@@ -53,14 +53,18 @@ def main(user: User):
 
         else:
             raise HTTPException(
-                status_code=response.status_code,
+                status_code=404,
                 detail="Failed to retrieve data for user."
 )
-    except Exception as e:
+    except requests.RequestException as e:
+        import traceback
+
+        traceback.print_exc()
+
         raise HTTPException(
             status_code=500,
-            detail=f"An error occurred: {e}"
-    )
+            detail=str(e)
+        )
     return {"message": "Hello from backend!"}
 
 if __name__ == "__main__":
