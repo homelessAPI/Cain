@@ -50,7 +50,7 @@ function App() {
       <div className="user-input">
         <fieldset className='input-fieldset'>
           <legend>Input</legend>
-          <input type="text" className='username' placeholder='Username' value={username} onChange={(e) => setUsername(e.target.value)}/>
+          <input type="text" className='username' placeholder='Github Username' value={username} onChange={(e) => setUsername(e.target.value)}/>
           <br />
           <button onClick={handleSubmit}>Submit</button>
         </fieldset>
