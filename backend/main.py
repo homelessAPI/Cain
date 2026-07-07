@@ -8,7 +8,7 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=[
         "http://localhost:5174",
-        "https://cain-ny53l4byc-spade2.vercel.app"
+        "https://cain-sable.vercel.app"
     ],
     allow_credentials=True,
     allow_methods=["*"],
