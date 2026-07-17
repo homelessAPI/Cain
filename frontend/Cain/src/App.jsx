@@ -1,22 +1,42 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import heroImg from './assets/hero.png'
+import {
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  CartesianGrid,
+  ResponsiveContainer,
+  Cell
+} from "recharts";
 import './App.css'
 
 function App() {
   const [username, setUsername] = useState("")
   const [events, setEvents] = useState([])
+  const [weekday, setWeekday] = useState({})
   const [error, setError] = useState(null)
+  const [loading, setLoading] = useState(false)
+  const [user, setUser] = useState(null)
+
+  const chartData = Object.entries(weekday).map(
+      ([day, events]) => ({
+        day,
+        events
+      })
+    )
 
   async function handleSubmit(e) {
     e.preventDefault()
+
+    setLoading(true)
+    console.log(import.meta.env.VITE_API_URL)
     try {
       const user = {
       username: username
     }
 
-    const response = await fetch("https://cain-h3k7.onrender.com/",
+    const response = await fetch(`${import.meta.env.VITE_API_URL}/`,
       {
         method: 'POST',
         headers: {
@@ -30,15 +50,23 @@ function App() {
 
     if (!response.ok) {
       setEvents([])
+      setUser([])
+      setWeekday([])
       setError(data.detail || "An error occurred while fetching events.")
     } else {
       setError(null)
       setEvents(data.events)
+      setUser(data.users)
+      setWeekday(data.Weekly_usage)
     }
     }
     catch (error) {
       setEvents([])
+      setUser([])
       setError("An error occurred while fetching events.")
+    }
+    finally {
+      setLoading(false)
     }
   }
 
@@ -52,11 +80,24 @@ function App() {
           <legend>Input</legend>
           <input type="text" className='username' placeholder='Github Username' value={username} onChange={(e) => setUsername(e.target.value)}/>
           <br />
-          <button onClick={handleSubmit}>Submit</button>
+          <button onClick={handleSubmit}>{loading? 'Searching': 'Search'}</button>
         </fieldset>
       </div>
       <div className="output">
-        <fieldset className='output-fieldset'>
+        <div className='output'>
+          <fieldset className='user-output-fieldset'>
+          <legend>User Info</legend>
+          {user && (
+              <div>
+                  <img src={user.profile} alt="Profile" />
+                  <h1>Following: {user.following}</h1>
+                  <h1>Followers: {user.followers}</h1>
+                  <h1>Public Repos: {user.public_repos}</h1>
+                  <h1>{user.company? `Company: ${user.company}` : "Company: none"}</h1>
+              </div>
+          )}
+        </fieldset>
+        <fieldset className='events-output-fieldset'>
           <legend>Output</legend>
           {error && <p className='error'>{error}</p>}
           <table className='events-list'>
@@ -82,6 +123,97 @@ function App() {
             </tbody>
           </table>
         </fieldset>
+        <fieldset className='analysis-output-fieldset'>
+          <ResponsiveContainer width="100%" height={350}>
+
+            <BarChart
+              data={chartData}
+              margin={{
+                top: 20,
+                right: 30,
+                left: 10,
+                bottom: 10
+              }}
+            >
+
+              <defs>
+                <linearGradient 
+                  id="barGradient"
+                  x1="0"
+                  y1="0"
+                  x2="0"
+                  y2="1"
+                >
+                  <stop 
+                    offset="0%"
+                    stopColor="#6366f1"
+                  />
+
+                  <stop
+                    offset="100%"
+                    stopColor="#a855f7"
+                  />
+                </linearGradient>
+              </defs>
+
+
+              <CartesianGrid
+                strokeDasharray="3 3"
+                vertical={false}
+              />
+
+
+              <XAxis 
+                dataKey="day"
+                tick={{
+                  fill:"#555",
+                  fontSize:12
+                }}
+              />
+
+
+              <YAxis
+                allowDecimals={false}
+                tick={{
+                  fill:"#555"
+                }}
+              />
+
+
+              <Tooltip
+                cursor={{
+                  fill:"rgba(99,102,241,0.1)"
+                }}
+
+                contentStyle={{
+                  borderRadius:"10px",
+                  border:"none",
+                  boxShadow:"0 8px 20px rgba(0,0,0,.15)"
+                }}
+              />
+
+
+              <Bar
+                dataKey="events"
+
+                fill="url(#barGradient)"
+
+                radius={[
+                  10,
+                  10,
+                  0,
+                  0
+                ]}
+
+                animationDuration={800}
+
+              />
+
+            </BarChart>
+
+          </ResponsiveContainer>
+        </fieldset>
+        </div>
       </div>
     </>
   )
