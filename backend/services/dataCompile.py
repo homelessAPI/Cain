@@ -1,0 +1,84 @@
+from fastapi import HTTPException
+from datetime import datetime
+import requests
+
+class FetchData:
+    # Intalizations
+    def __init__(self, username: str):
+        self.username = username
+        self.url = f"https://api.github.com/users/{username}"
+        self.events_url = f"https://api.github.com/users/{username}/events"
+        self.repos_url = f"https://api.github.com/users/{username}/repos"
+
+        self.url_response = requests.get(self.url)
+        self.events_response = requests.get(self.events_url)
+        self.repos_response = requests.get(self.repos_url)
+
+        self.url_data = self.url_response.json()
+        self.events_data = self.events_response.json()
+        self.repos_data = self.repos_response.json()
+
+        self.user_info 
+        self.events_list = []
+        self.repos_list = []
+
+    def user_info(self):
+        
+        if self.url_response.status_code != 200:
+            raise HTTPException(status_code=self.url_response.status_code, detail="Faild to fetch user data")
+        elif self.url_response.status_code == []:
+            raise HTTPException(status_code=self.url_response.status_code, detail="User profile is empty")
+        elif self.url_response.status_code == 200:
+            self.user_info = {
+                    "profile": self.url_data["avatar_url"],
+                    "following": self.url_data["following"],
+                    "followers": self.url_data["followers"],
+                    "public_repos": self.url_data["public_repos"],
+                    "company": self.url_data["company"]
+                    }
+            
+            return self.user_info
+
+    # Method to fetch, process and return data from the events url
+    def events(self):
+
+        if self.events_response.status_code != 200:
+            raise HTTPException(status_code=self.events_response.status_code, detail="Failed to retrive event data")
+        
+        elif self.events_data == []:
+            raise HTTPException(status_code=self.events_response.status_code, detail="No event data found.")
+
+        elif self.events_response.status_code == 200:
+
+            for i in self.events_data:
+                date = datetime.fromisoformat(i["created_at"].replace("Z", "+00:00"))
+
+                self.events_list.append({
+                    "type": i["type"],
+                    "repository": i["repo"]["name"],
+                    "repository_url": f"https://github.com/{i['repo']['name']}",
+                    "created_at": date,
+                    "public": i["public"]
+            })
+        print("Repos: " + str(self.repos_data))
+        return self.events_list
+        
+    # Method to fetch, process and retuan data from the repos url
+    def repos(self):
+        if self.repos_response.status_code != 200:
+            raise HTTPException(status_code=self.repos_response.status_code, detail="Failed to retrive repo data")
+        
+        elif self.repos_data == []:
+            raise HTTPException(status_code=self.repos_response.status_code, detail="No repo data found.")
+        elif self.repos_response.status_code == 200:
+
+            for j in self.repos_data:
+                self.repos_list.append({
+                    "Repo_name": j["name"],
+                    "description": j['description'],
+                    "Private": j['private'],
+                    "owner": j['owner']['login'],
+                    "repo_url": j['html_url']
+                })
+
+            return self.repos_list

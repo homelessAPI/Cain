@@ -19,9 +19,7 @@ class GitHubAnalyzer:
             }
 
             for event in self.events:
-                date = datetime.fromisoformat(
-                    event["created_at"].replace("Z", "+00:00")
-                )
+                date = event["created_at"]
 
                 weekday = date.strftime("%A")
 

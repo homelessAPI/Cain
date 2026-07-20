@@ -14,6 +14,7 @@ import './App.css'
 function App() {
   const [username, setUsername] = useState("")
   const [events, setEvents] = useState([])
+  const [repos, setRepos] = useState([])
   const [weekday, setWeekday] = useState({})
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
@@ -51,18 +52,21 @@ function App() {
     if (!response.ok) {
       setEvents([])
       setUser([])
+      setRepos([])
       setWeekday([])
       setError(data.detail || "An error occurred while fetching events.")
     } else {
       setError(null)
       setEvents(data.events)
       setUser(data.users)
+      setRepos(data.repos)
       setWeekday(data.Weekly_usage)
     }
     }
     catch (error) {
       setEvents([])
       setUser([])
+      setRepos([])
       setError("An error occurred while fetching events.")
     }
     finally {
@@ -105,7 +109,6 @@ function App() {
               <tr className='events-list-header'>
                 <th>Event Type</th>
                 <th>Repository</th>
-                <th>Repository URL</th>
                 <th>Created At</th>
                 <th>Public</th>
               </tr>
@@ -114,9 +117,10 @@ function App() {
               {events.map((event,index) => (
                 <tr key={index}>
                   <td>{event.type}</td>
-                  <td>{event.repository}</td>
-                  <td>{event.repository_url}</td>
-                  <td>{event.created_at}</td>
+                  <td>
+                    <a className='link' href={event.repository_url}>{event.repository.split("/")[1]}</a>
+                  </td>
+                  <td>{new Date(event.created_at).toLocaleString()}</td>
                   <td>{event.public ? 'Yes' : 'No'}</td>
                 </tr>
               ))}

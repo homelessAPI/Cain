@@ -2,11 +2,13 @@
    Global
 ========================== */
 
+@import url('https://googleapis.com');
+
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Quicksand', sans-serif;
 }
 
 body {
@@ -180,7 +182,7 @@ body {
   object-fit: cover;
 
 
-  border: 5px solid #4f46e5;
+  border: 5px solid #544fbd;
 
 
   margin: 1rem auto;
@@ -193,15 +195,15 @@ body {
 
 .user-output-fieldset h1 {
 
-  font-size: 1rem;
+  font-size: 1.2rem;
 
-  font-weight: 500;
+  font-weight: 1000;
 
   margin: .8rem 0;
 
+  color: #6858c2;
+
 }
-
-
 
 
 /* ==========================
@@ -247,6 +249,12 @@ body {
 
 }
 
+.events-output-fieldset .link {
+  
+  font-size: large;
+
+  font-weight: 500;
+}
 
 
 /* ==========================
