@@ -34,7 +34,9 @@ class FetchData:
                     "following": self.url_data["following"],
                     "followers": self.url_data["followers"],
                     "public_repos": self.url_data["public_repos"],
-                    "company": self.url_data["company"]
+                    "company": self.url_data["company"],
+                    "hireable": self.url_data["hireable"],
+                    "bio": self.url_data["bio"]
                     }
             
             return self.user_info
@@ -60,7 +62,9 @@ class FetchData:
                     "created_at": date,
                     "public": i["public"]
             })
-        print("Repos: " + str(self.repos_data))
+        print("Url: " + str(self.url_data) + "\n\n")
+        print("event: " + str(self.events_data) + "\n\n")
+        print("Repos: " + str(self.repos_data) + "\n\n")
         return self.events_list
         
     # Method to fetch, process and retuan data from the repos url
@@ -78,6 +82,7 @@ class FetchData:
                     "description": j['description'],
                     "Private": j['private'],
                     "owner": j['owner']['login'],
+                    "language": j['language'],
                     "repo_url": j['html_url']
                 })
 

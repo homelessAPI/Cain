@@ -1,9 +1,11 @@
 from datetime import datetime
+from collections import Counter
 
 class GitHubAnalyzer:
 
-    def __init__(self, events):
+    def __init__(self, events, repos):
         self.events = events
+        self.repos = repos
 
     def weekday_counter(self):
 
@@ -28,3 +30,20 @@ class GitHubAnalyzer:
             return weekday_count
         except Exception as e:
             return {"message": "something has failed", "error_detail": str(e)}
+    
+    def language_categorizer(self):
+        languages = [
+            repo["language"]
+            for repo in self.repos
+            if repo["language"]
+        ]
+
+        counts = Counter(languages)
+
+        return [
+            {
+                "language": language,
+                "count": count
+            }
+            for language, count in counts.items()
+        ]

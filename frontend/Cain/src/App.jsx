@@ -19,6 +19,7 @@ function App() {
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
   const [user, setUser] = useState(null)
+  const [languages, setLanguages] = useState([])
 
   const chartData = Object.entries(weekday).map(
       ([day, events]) => ({
@@ -61,6 +62,7 @@ function App() {
       setUser(data.users)
       setRepos(data.repos)
       setWeekday(data.Weekly_usage)
+      setLanguages(data.languages)
     }
     }
     catch (error) {
@@ -216,6 +218,57 @@ function App() {
             </BarChart>
 
           </ResponsiveContainer>
+
+          <ResponsiveContainer width="100%" height={300}>
+    <BarChart
+        data={languages}
+        layout="vertical"
+        margin={{
+            top: 15,
+            right: 20,
+            left: 20,
+            bottom: 5
+        }}
+    >
+        <CartesianGrid
+            strokeDasharray="3 3"
+            horizontal={false}
+        />
+
+        <XAxis
+            type="number"
+            allowDecimals={false}
+        />
+
+        <YAxis
+            type="category"
+            dataKey="language"
+            width={90}
+        />
+
+        <Tooltip />
+
+        <Bar
+            dataKey="count"
+            radius={[0, 8, 8, 0]}
+        >
+            {languages.map((entry, index) => (
+                <Cell
+                    key={index}
+                    fill={[
+                        "#6366f1",
+                        "#8b5cf6",
+                        "#ec4899",
+                        "#f59e0b",
+                        "#10b981",
+                        "#06b6d4",
+                        "#ef4444"
+                    ][index % 7]}
+                />
+            ))}
+        </Bar>
+    </BarChart>
+</ResponsiveContainer>
         </fieldset>
         </div>
       </div>

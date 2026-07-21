@@ -26,14 +26,14 @@ def main(user: User):
     fetcher = FetchData(user.username)
     event = fetcher.events()
     repos = fetcher.repos()
-    analyser = GitHubAnalyzer(event)
+    analyser = GitHubAnalyzer(event, repos)
 
     # Error handling
     print("user info: " + str(fetcher.user_info) + "\n\n")
     # print("event: " + str(event) + "\n\n")
     # print("analyser: " + str(analyser.weekday_counter()) + "\n\n")
 
-    return {"events": event, "repos": repos, "users": fetcher.user_info(), "Weekly_usage": analyser.weekday_counter()}
+    return {"events": event, "repos": repos, "users": fetcher.user_info(), "Weekly_usage": analyser.weekday_counter(), "languages": analyser.language_categorizer()}
 
 if __name__ == "__main__":
     main()
