@@ -1,0 +1,19 @@
+
+
+.Navbar {
+    padding: 10px;
+    margin: 10px;
+    width: 100%;
+    background-color: purple;
+}
+
+.Links {
+    display: flex;
+    justify-content: center;
+}
+
+.Link {
+    color: white;
+    padding: 10px;
+    text-decoration: none;
+}

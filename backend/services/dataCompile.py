@@ -18,7 +18,7 @@ class FetchData:
         self.events_data = self.events_response.json()
         self.repos_data = self.repos_response.json()
 
-        self.user_info 
+        self.user_data = {}
         self.events_list = []
         self.repos_list = []
 
@@ -29,7 +29,7 @@ class FetchData:
         elif self.url_response.status_code == []:
             raise HTTPException(status_code=self.url_response.status_code, detail="User profile is empty")
         elif self.url_response.status_code == 200:
-            self.user_info = {
+            self.user_data  = {
                     "profile": self.url_data["avatar_url"],
                     "following": self.url_data["following"],
                     "followers": self.url_data["followers"],
@@ -39,7 +39,7 @@ class FetchData:
                     "bio": self.url_data["bio"]
                     }
             
-            return self.user_info
+            return self.user_data 
 
     # Method to fetch, process and return data from the events url
     def events(self):
@@ -62,9 +62,9 @@ class FetchData:
                     "created_at": date,
                     "public": i["public"]
             })
-        print("Url: " + str(self.url_data) + "\n\n")
-        print("event: " + str(self.events_data) + "\n\n")
-        print("Repos: " + str(self.repos_data) + "\n\n")
+        #print("Url: " + str(self.url_data) + "\n\n")
+        #print("event: " + str(self.events_data) + "\n\n")
+        #print("Repos: " + str(self.repos_data) + "\n\n")
         return self.events_list
         
     # Method to fetch, process and retuan data from the repos url
