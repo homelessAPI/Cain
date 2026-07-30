@@ -20,8 +20,8 @@ def review(user: User):
 
     prompt = build_review_prompt(
         user_profile,
-        repos[:10],
-        events[:20]
+        repos[:5],
+        events[:5]
     )
 
     review = ai.ask(prompt)

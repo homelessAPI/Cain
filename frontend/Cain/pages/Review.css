@@ -1,0 +1,11 @@
+.ai_review {
+    display: flex;
+    justify-content: center;
+    
+}
+
+p {
+    padding: 10px;
+   border-radius: 2px;
+}
+

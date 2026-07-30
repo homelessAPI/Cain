@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useContext, useState } from 'react'
+import { GithubContext } from "../components/GithubContext.jsx";
 import {
   BarChart,
   Bar,
@@ -14,14 +15,30 @@ import '../components/Navbar';
 import Navbar from '../components/Navbar';
 
 function Home() {
-  const [username, setUsername] = useState("")
-  const [events, setEvents] = useState([])
-  const [repos, setRepos] = useState([])
-  const [weekday, setWeekday] = useState({})
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-  const [user, setUser] = useState(null)
-  const [languages, setLanguages] = useState([])
+
+  const {
+
+    username,
+    setUsername,
+
+    user,
+    setUser,
+
+    events,
+    setEvents,
+
+    repos,
+    setRepos,
+
+    languages,
+    setLanguages,
+
+    weekday,
+    setWeekday
+
+} = useContext(GithubContext );
 
   const chartData = Object.entries(weekday).map(
       ([day, events]) => ({
@@ -54,7 +71,13 @@ function Home() {
         body: JSON.stringify(user)
       }
     )
+    
     const data = await response.json()
+
+    localStorage.setItem(
+        "data",
+        JSON.stringify(data)
+    )
     console.log(data)
 
     if (!response.ok) {
