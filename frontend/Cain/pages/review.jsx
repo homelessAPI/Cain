@@ -1,7 +1,7 @@
 import { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
 import "./Review.css";
-import { GithubContext   } from "../components/GithubContext.jsx";
+import { GithubContext } from "../components/GithubContext.jsx";
 
 function Review(){
 
@@ -21,12 +21,21 @@ function Review(){
 
     weekday,
 
-    review
+    review,
 
-} = useContext(GithubContext  );
+    setReview
+
+} = useContext(GithubContext);
 
     useEffect(() => {
         async function getReview() {
+
+            const username = localStorage.getItem("Github_Username");
+
+            if (!username) {
+                setReview("No GitHub username found.");
+                setLoading(false);
+                return;
 
             try {
 
@@ -57,7 +66,7 @@ function Review(){
         }
         getReview();
 
-    }, []);
+    }}, []);
 
 
 
