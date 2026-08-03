@@ -1,12 +1,10 @@
-import { createContext, useState, useEffect  } from "react";
+import { createContext, useState } from "react";
 
 export const GithubContext = createContext();
 
 export function GithubProvider({ children }) {
 
-    const [username, setUsername] = useState(
-    localStorage.getItem("Github_Username") || ""
-);
+    const [username, setUsername] = useState("");
 
     const [user, setUser] = useState(null);
 
