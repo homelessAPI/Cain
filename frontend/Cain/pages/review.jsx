@@ -94,7 +94,8 @@ return (
 
     <div className="ai_review">
         <h1>AI Review: {username}</h1>
-        {loading ? <p>...Analysing profile...</p> : <ReactMarkdown><h3>Please be paitent as i do not own a data center but an overworked lenovo laptop</h3><br/>{review}</ReactMarkdown>}
+        <h3>Please be paitent as i do not own a data center but an overworked lenovo laptop</h3>
+        {loading ? <p>...Analysing profile...</p> : <ReactMarkdown>{review}</ReactMarkdown>}
     </div>
     </>
 )
