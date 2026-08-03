@@ -93,7 +93,7 @@ return (
     <Navbar />
 
     <div className="ai_review">
-        <h1>AI Review</h1>
+        <h1>AI Review: {username}</h1>
         {loading ? <p>...Analysing profile...</p> : <ReactMarkdown>{review}</ReactMarkdown>}
     </div>
     </>

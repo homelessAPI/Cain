@@ -4,6 +4,7 @@ from services.analyser import GitHubAnalyzer
 from services.dataCompile import FetchData
 from models.models import User
 from routes.review import router as review_router
+from routes.leaderboard import route as leaderboard_router
 from datetime import datetime
 import requests
 import time
@@ -11,6 +12,7 @@ import time
 
 app = FastAPI()
 app.include_router(review_router)
+app.include_router(leaderboard_router)
 
 app.add_middleware(
     CORSMiddleware,

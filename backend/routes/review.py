@@ -21,8 +21,8 @@ def review(user: User):
 
     prompt = build_review_prompt(
         user_profile,
-        repos[:5],
-        events[:5]
+        repos,
+        events
     )
 
     return StreamingResponse(
