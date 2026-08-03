@@ -123,7 +123,7 @@ function Review(){
 
 
                 <h3>
-                    Please be patient, my Lenovo is fighting for its life.
+                    Please be patient as i do not own a data center but an over worked lenovo. 😭😭
                 </h3>
 
 
