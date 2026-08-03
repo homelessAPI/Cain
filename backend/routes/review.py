@@ -1,4 +1,5 @@
 from fastapi import APIRouter
+from fastapi.responses import StreamingResponse
 from models.models import User
 from prompts.review_prompt import build_review_prompt
 from services.ai_service import AIReviwer
@@ -24,8 +25,7 @@ def review(user: User):
         events[:5]
     )
 
-    review = ai.ask(prompt)
-
-    return {
-        "AI_Review": review
-    }
+    return StreamingResponse(
+        ai.ask_stream(prompt),
+        media_type="text/plain"
+    )

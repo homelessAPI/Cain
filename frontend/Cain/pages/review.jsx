@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import Navbar from "../components/Navbar"
+import ReactMarkdown from "react-markdown";
 import "./Review.css";
 import { GithubContext } from "../components/GithubContext.jsx";
 
@@ -36,37 +37,53 @@ function Review(){
                 setReview("No GitHub username found.");
                 setLoading(false);
                 return;
+            }
 
             try {
 
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/review`,
-            {
-                method: 'POST',
-                headers: {
-                'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({username:username})
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/review`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify({ username: username })
+                    }
+                )
+
+                if (!response.ok || !response.body) {
+                    setReview("Failed to fetch Review")
+                    return
+                }
+
+                // Once the first chunk arrives, stop showing the loading state
+                // and start rendering text as it streams in.
+                setLoading(false)
+
+                const reader = response.body.getReader()
+                const decoder = new TextDecoder()
+                let fullText = ""
+
+                while (true) {
+                    const { done, value } = await reader.read()
+                    if (done) break
+
+                    const chunkText = decoder.decode(value, { stream: true })
+                    fullText += chunkText
+                    setReview(fullText)
+                }
             }
-            )
-
-            const data = await response.json();
-
-
-            setLoading(false)
-            setReview(data.AI_Review);
-            }
-            catch (err){
+            catch (err) {
+                console.error(err)
                 setReview("Failed to fetch Review")
             }
-
             finally {
                 setLoading(false)
             }
-
         }
         getReview();
 
-    }}, []);
+    }, []);
 
 
 
@@ -77,7 +94,7 @@ return (
 
     <div className="ai_review">
         <h1>AI Review</h1>
-        {loading ? <p>...Analysing profile...</p> : <p>{review}</p>}
+        {loading ? <p>...Analysing profile...</p> : <ReactMarkdown>{review}</ReactMarkdown>}
     </div>
     </>
 )

@@ -9,11 +9,17 @@ URL = https://cain-sable.vercel.app/
 
 ## Technologies used
 -python
+- fastapi
+- React JS
 
 ## Versions
 - Ver 1.0: (Fetch the display Github activity)
 - Ver 1.1 (tabulate the returned result)
 - Ver 2.0: (become a fastapi and react webapp)
+- Ver 2.5: (AI Review system implemented)
+
+
+
 
 Received username: homelessapi
 Url: {'login': 'homelessAPI', 'id': 294961280, 'node_id': 'U_kgDOEZTAgA', 'avatar_url': 'https://avatars.githubusercontent.com/u/294961280?v=4', 'gravatar_id': '', 'url': 'https://api.github.com/users/homelessAPI', 'html_url': 'https://github.com/homelessAPI', 'followers_url': 'https://api.github.com/users/homelessAPI/followers', 'following_url': 'https://api.github.com/users/homelessAPI/following{/other_user}', 'gists_url': 'https://api.github.com/users/homelessAPI/gists{/gist_id}', 'starred_url': 'https://api.github.com/users/homelessAPI/starred{/owner}{/repo}', 'subscriptions_url': 'https://api.github.com/users/homelessAPI/subscriptions', 'organizations_url': 'https://api.github.com/users/homelessAPI/orgs', 'repos_url': 'https://api.github.com/users/homelessAPI/repos', 'events_url': 'https://api.github.com/users/homelessAPI/events{/privacy}', 'received_events_url': 'https://api.github.com/users/homelessAPI/received_events', 'type': 'User', 'user_view_type': 'public', 'site_admin': False, 'name': None, 'company': None, 'blog': '', 'location': None, 'email': None, 'hireable': None, 'bio': None, 'twitter_username': None, 'public_repos': 3, 'public_gists': 0, 'followers': 0, 'following': 2, 'created_at': '2026-06-18T22:55:03Z', 'updated_at': '2026-07-20T15:53:01Z'}

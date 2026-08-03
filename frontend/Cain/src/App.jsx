@@ -17,8 +17,6 @@ import Review from "../pages/review"
 
 function App() {
   return (
-    <fieldset>
-      <legend>Cain</legend>
       <BrowserRouter>
     <Routes>
       
@@ -27,8 +25,7 @@ function App() {
 
     </Routes>
     </BrowserRouter>
-    </fieldset>
   )
 }
 
-export default App
+export default App;

@@ -1,11 +1,429 @@
+/* =====================================
+   Cain AI Review Page
+   GitHub + Cinematic AI Theme
+===================================== */
+
+
 .ai_review {
-    display: flex;
-    justify-content: center;
-    
+
+    max-width: 1000px;
+
+    margin: 50px auto;
+
+    padding: 40px;
+
+
+    background:
+
+        linear-gradient(145deg,
+
+            rgba(22, 27, 34, .95),
+
+            rgba(13, 17, 23, .95));
+
+
+    border:
+
+        1px solid #30363d;
+
+
+    border-radius: 20px;
+
+
+    box-shadow:
+
+        0 20px 60px rgba(0, 0, 0, .45),
+
+
+        0 0 40px rgba(139, 92, 246, .15);
+
+
+
+    backdrop-filter: blur(15px);
+
+
+    animation:
+
+        fadeIn .6s ease;
+
 }
 
-p {
-    padding: 10px;
-   border-radius: 2px;
+
+
+/* =====================================
+        Title
+===================================== */
+
+
+.ai_review h1 {
+
+
+    text-align: center;
+
+
+    font-size: 42px;
+
+
+    margin-bottom: 35px;
+
+
+    color: #e6edf3;
+
+
+    letter-spacing: 1px;
+
+
+
+    background:
+
+        linear-gradient(90deg,
+
+            #58a6ff,
+
+            #a855f7);
+
+
+    -webkit-background-clip: text;
+
+
+    -webkit-text-fill-color: transparent;
+
 }
 
+
+
+/* =====================================
+        Loading text
+===================================== */
+
+
+.ai_review>p {
+
+
+    text-align: center;
+
+
+    color: #8b949e;
+
+
+    font-size: 20px;
+
+
+    animation: pulse 1.5s infinite;
+
+}
+
+
+
+/* =====================================
+        Markdown Body
+===================================== */
+
+
+.ai_review p {
+
+
+    color: #c9d1d9;
+
+
+    font-size: 18px;
+
+
+    line-height: 1.8;
+
+
+    margin-bottom: 20px;
+
+}
+
+
+
+.ai_review h2 {
+
+
+    color: #58a6ff;
+
+
+    margin-top: 35px;
+
+
+    margin-bottom: 15px;
+
+
+    border-bottom:
+
+        1px solid #30363d;
+
+
+    padding-bottom: 10px;
+
+}
+
+
+
+.ai_review h3 {
+
+
+    color: #a78bfa;
+
+
+    margin-top: 25px;
+
+}
+
+
+
+/* =====================================
+        Lists
+===================================== */
+
+
+.ai_review ul {
+
+
+    padding-left: 30px;
+
+
+}
+
+
+
+.ai_review li {
+
+
+    color: #c9d1d9;
+
+
+    margin-bottom: 10px;
+
+
+    line-height: 1.7;
+
+}
+
+
+
+.ai_review li::marker {
+
+
+    color: #8b5cf6;
+
+}
+
+
+
+/* =====================================
+        Code Blocks
+===================================== */
+
+
+.ai_review code {
+
+
+    background: #161b22;
+
+
+    color: #79c0ff;
+
+
+    padding:
+
+        3px 8px;
+
+
+    border-radius: 6px;
+
+
+    font-family:
+
+        "Fira Code",
+
+        monospace;
+
+}
+
+
+
+.ai_review pre {
+
+
+    background: #010409;
+
+
+    padding: 20px;
+
+
+    border-radius: 12px;
+
+
+    overflow-x: auto;
+
+
+    border:
+
+        1px solid #30363d;
+
+}
+
+
+
+/* =====================================
+        Quotes
+===================================== */
+
+
+.ai_review blockquote {
+
+
+    border-left:
+
+        4px solid #8b5cf6;
+
+
+    margin-left: 0;
+
+
+    padding-left: 20px;
+
+
+    color: #8b949e;
+
+
+    font-style: italic;
+
+
+}
+
+
+
+/* =====================================
+        Links
+===================================== */
+
+
+.ai_review a {
+
+
+    color: #58a6ff;
+
+
+    text-decoration: none;
+
+}
+
+
+.ai_review a:hover {
+
+
+    text-decoration: underline;
+
+}
+
+
+
+/* =====================================
+        Animation
+===================================== */
+
+
+@keyframes fadeIn {
+
+
+    from {
+
+
+        opacity: 0;
+
+
+        transform:
+
+            translateY(25px);
+
+
+    }
+
+
+    to {
+
+
+        opacity: 1;
+
+
+        transform:
+
+            translateY(0);
+
+
+    }
+
+}
+
+
+
+@keyframes pulse {
+
+
+    0% {
+
+
+        opacity: .5;
+
+    }
+
+
+    50% {
+
+
+        opacity: 1;
+
+    }
+
+
+    100% {
+
+
+        opacity: .5;
+
+    }
+
+}
+
+
+
+/* =====================================
+        Mobile
+===================================== */
+
+
+@media(max-width:700px) {
+
+
+    .ai_review {
+
+
+        margin: 20px;
+
+
+        padding: 25px;
+
+    }
+
+
+
+    .ai_review h1 {
+
+
+        font-size: 32px;
+
+    }
+
+
+
+    .ai_review p {
+
+
+        font-size: 16px;
+
+    }
+
+}

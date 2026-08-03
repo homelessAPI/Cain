@@ -1,19 +1,49 @@
-
-
-.Navbar {
-    padding: 10px;
-    margin: 10px;
-    width: 100%;
-    background-color: purple;
+.NavbarContainer {
+    background-color: #0d1117;
+    border-bottom: 1px solid #47445d;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
 }
 
-.Links {
+.Navbar {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 40px;
+    flex-wrap: wrap;
 }
 
 .Link {
-    color: white;
-    padding: 10px;
     text-decoration: none;
+
+    color: #c9d1d9;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+    transition: color .2s ease;
+}
+
+.Link:hover {
+    color: white;
+    background-color: #47445d;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.Navbar h1 {
+    margin: 0;
+
+    color: white;
+
+    font-size: 1.5rem;
+
+    font-weight: 700;
+
+    letter-spacing: 2px;
+}
+
+.LinksContainer {
+    display: flex;
+    gap: 24px;
 }
