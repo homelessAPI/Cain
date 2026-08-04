@@ -17,3 +17,4 @@ URL = https://cain-sable.vercel.app/
 - Ver 1.1 (tabulate the returned result)
 - Ver 2.0: (become a fastapi and react webapp)
 - Ver 2.5: (AI Review system implemented)
+- Ver 2.6: (Changed ollama to gemini)
