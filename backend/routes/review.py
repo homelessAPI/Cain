@@ -2,7 +2,7 @@ from fastapi import APIRouter
 from fastapi.responses import StreamingResponse
 from models.models import User
 from prompts.review_prompt import build_review_prompt
-from services.ai_service import AIReviwer
+from services.ai_service import AIReviwer 
 from services.dataCompile import FetchData
 
 router = APIRouter()
