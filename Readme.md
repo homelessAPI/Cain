@@ -30,3 +30,19 @@ unrestricted for have a nice display
 Rapid for devil in georgia
 
 Chilled 
+
+Superlative ---
+
+Teen, Indie - hamilton
+
+Romantic - you
+
+Millennial - the hispanic Rap
+
+theatrical, classic - man in the mirror
+
+Confusing - 
+
+
+Amicable: Amicable is an adjective that means friendly, peaceable, and showing goodwill without arguments
+- Batman is not very Amicable towards superman.
