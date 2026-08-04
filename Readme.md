@@ -18,3 +18,15 @@ URL = https://cain-sable.vercel.app/
 - Ver 2.0: (become a fastapi and react webapp)
 - Ver 2.5: (AI Review system implemented)
 - Ver 2.6: (Changed ollama to gemini)
+
+
+Petite 
+
+
+Lonly for hello
+
+unrestricted for have a nice display
+
+Rapid for devil in georgia
+
+Chilled 
