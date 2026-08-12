@@ -46,5 +46,4 @@ if __name__ == "__main__":
 
     analyser = RepoAnalyser(repo)
     analyser.days_since_pushed()
-    analyser.repo_content("homelessapi", "Abel")
     analyser.activity_level()
