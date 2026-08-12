@@ -120,5 +120,5 @@ class FetchData:
 
             
             else:
-                return HTTPException(status_code=response.status_code, detail="Failed to retrieve repository content")
+                raise HTTPException(status_code=response.status_code, detail="Failed to retrieve repository content")
 
