@@ -110,7 +110,7 @@ class FetchData:
 
         return self.repos_list
 
-    def repo_content(self, owner, repo_name):
+    def repo_contents(self, owner, repo_name):
             url = f"https://api.github.com/repos/{owner}/{repo_name}/contents"
             response = requests.get(url)
             repos_content = response.json()

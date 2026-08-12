@@ -41,7 +41,7 @@ class RepoAnalyser:
 
     def repo_content_review(self, owner, repo_name):
         fetcher = FetchData(owner)
-        contents = fetcher.repo_content(owner, repo_name)
+        contents = fetcher.repo_contents(owner, repo_name)
 
         repo_content = {
                     "README.md": False,
@@ -64,7 +64,7 @@ class RepoAnalyser:
                     self.repo_content["Dockerfile"] = True
                 else:
                     break
-    
+ 
 
 if __name__ == "__main__":
     repo = {
