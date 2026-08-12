@@ -27,6 +27,14 @@ class RepoAnalyser:
                 activity_level = "Inactive"
         return activity_level
 
+    def repository_age(self):
+        created_at = self.repo.get("created_at")
+        if created_at:
+            created_date = datetime.strptime(created_at, "%Y-%m-%dT%H:%M:%SZ")
+            age_in_days = (datetime.now(timezone.utc) - created_date).days
+            return age_in_days
+        return None
+    
 
 if __name__ == "__main__":
     repo = {
