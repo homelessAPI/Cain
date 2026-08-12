@@ -75,15 +75,25 @@ class FetchData:
         elif self.repos_data == []:
             raise HTTPException(status_code=self.repos_response.status_code, detail="No repo data found.")
         elif self.repos_response.status_code == 200:
-
+            print("Repos: " + str(self.repos_data) + "\n\n")
             for j in self.repos_data:
                 self.repos_list.append({
                     "Repo_name": j["name"],
                     "description": j['description'],
                     "Private": j['private'],
+                    "created_at": j['created_at'],
+                    "updated_at": j['updated_at'],
+                    "forks": j['forks'],
+                    "stargazers_count": j['stargazers_count'],
+                    "watchers_count": j['watchers_count'],
+                    "size": j['size'],
+                    "default_branch": j['default_branch'],
+                    "open_issues_count": j['open_issues_count'],
+                    "pushed_at": j['pushed_at'],
                     "owner": j['owner']['login'],
                     "language": j['language'],
                     "repo_url": j['html_url']
                 })
 
             return self.repos_list
+
