@@ -36,4 +36,5 @@ repo = {
 
 analyser = RepoAnalyser(repo)
 analyser.days_since_pushed()
+
 analyser.activity_level()
