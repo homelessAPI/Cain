@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+from services.dataCompile import FetchData
 import requests
 
 class RepoAnalyser:
@@ -35,6 +36,34 @@ class RepoAnalyser:
             return age_in_days
         return None
 
+    def is_fork(self):
+        return self.repo.get("fork", False)
+
+    def repo_content_review(self, owner, repo_name):
+        fetcher = FetchData(owner)
+        contents = fetcher.repo_content(owner, repo_name)
+
+        repo_content = {
+                    "README.md": False,
+                    "gitignore": False,
+                    "LICENSE": False,
+                    "Tests": False,
+                    "Dockerfile": False
+                }
+
+        for content in contents:
+                if content["name"] == "README.md":
+                    self.repo_content["README.md"] = True
+                elif content["name"] == ".gitignore":
+                    self.repo_content["gitignore"] = True
+                elif content["name"] == "LICENSE":
+                    self.repo_content["LICENSE"] = True
+                elif content["name"] == "Tests":
+                    self.repo_content["Tests"] = True
+                elif content["name"] == "Dockerfile":
+                    self.repo_content["Dockerfile"] = True
+                else:
+                    break
     
 
 if __name__ == "__main__":

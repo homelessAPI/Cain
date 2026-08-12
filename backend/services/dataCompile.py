@@ -113,9 +113,12 @@ class FetchData:
     def repo_content(self, owner, repo_name):
             url = f"https://api.github.com/repos/{owner}/{repo_name}/contents"
             response = requests.get(url)
+            repos_content = response.json()
             if response.status_code == 200:
-                print(f"Contents of the repository :" + str(response.json()))
-                return response.json()
+                return repos_content
+
+
+            
             else:
-                return None
+                return HTTPException(status_code=response.status_code, detail="Failed to retrieve repository content")
 
