@@ -76,11 +76,12 @@ class FetchData:
             repos_response = requests.get(self.repos_url, 
                                            params={"page": page, 
                                                    "per_page": 100})
+            data = repos_response.json()
             if repos_response.status_code != 200:
                 raise HTTPException(status_code=repos_response.status_code, detail="Failed to retrieve repo data")
-            elif repos_response.json() == []:
+            if not data:
                 break
-            all_repos.extend(repos_response.json())
+            all_repos.extend(data)
             page += 1
 
         return all_repos
