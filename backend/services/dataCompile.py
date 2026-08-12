@@ -12,11 +12,11 @@ class FetchData:
 
         self.url_response = requests.get(self.url)
         self.events_response = requests.get(self.events_url)
-        self.repos_response = requests.get(self.repos_url)
+
 
         self.url_data = self.url_response.json()
         self.events_data = self.events_response.json()
-        self.repos_data = self.repos_response.json()
+        self.repos_data = self.fetch_repos()
 
         self.user_data = {}
         self.events_list = []
@@ -68,31 +68,44 @@ class FetchData:
         return self.events_list
         
     # Method to fetch, process and retuan data from the repos url
-    def repos(self):
-        if self.repos_response.status_code != 200:
-            raise HTTPException(status_code=self.repos_response.status_code, detail="Failed to retrive repo data")
-        
-        elif self.repos_data == []:
-            raise HTTPException(status_code=self.repos_response.status_code, detail="No repo data found.")
-        elif self.repos_response.status_code == 200:
-            for j in self.repos_data:
-                self.repos_list.append({
-                    "Repo_name": j["name"],
-                    "description": j['description'],
-                    "Private": j['private'],
-                    "created_at": j['created_at'],
-                    "updated_at": j['updated_at'],
-                    "forks": j['forks'],
-                    "stargazers_count": j['stargazers_count'],
-                    "watchers_count": j['watchers_count'],
-                    "size": j['size'],
-                    "default_branch": j['default_branch'],
-                    "open_issues_count": j['open_issues_count'],
-                    "pushed_at": j['pushed_at'],
-                    "owner": j['owner']['login'],
-                    "language": j['language'],
-                    "repo_url": j['html_url']
-                })
+    def fetch_repos(self):
+        page = 1
+        all_repos = []
 
-            return self.repos_list
+        while True:
+            repos_response = requests.get(self.repos_url, 
+                                           params={"page": page, 
+                                                   "per_page": 100})
+            if repos_response.status_code != 200:
+                raise HTTPException(status_code=repos_response.status_code, detail="Failed to retrieve repo data")
+            elif repos_response.json() == []:
+                break
+            all_repos.extend(repos_response.json())
+            page += 1
+
+        return all_repos
+
+
+    def repos(self):
+        
+        for j in self.repos_data:
+            self.repos_list.append({
+                "Repo_name": j["name"],
+                "description": j['description'],
+                "Private": j['private'],
+                "created_at": j['created_at'],
+                "updated_at": j['updated_at'],
+                "forks": j['forks'],
+                "stargazers_count": j['stargazers_count'],
+                "watchers_count": j['watchers_count'],
+                "size": j['size'],
+                "default_branch": j['default_branch'],
+                "open_issues_count": j['open_issues_count'],
+                "pushed_at": j['pushed_at'],
+                "owner": j['owner']['login'],
+                "language": j['language'],
+                "repo_url": j['html_url']
+            })
+
+        return self.repos_list
 
