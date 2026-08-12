@@ -1,4 +1,5 @@
 from datetime import datetime, timezone
+import requests
 
 class RepoAnalyser:
     def __init__(self, repo):
@@ -8,7 +9,7 @@ class RepoAnalyser:
         
         pushed_at = self.repo.get("pushed_at")
         if pushed_at:
-            pushed_date = datetime.strptime(pushed_at, "%Y-%m-%dT%H:%M:%SZ")
+            pushed_date = datetime.fromisoformat(pushed_at.replace("Z", "+00:00"))
             days_since_push = (datetime.now(timezone.utc) - pushed_date).days
             return days_since_push
         return None
@@ -30,10 +31,19 @@ class RepoAnalyser:
     def repository_age(self):
         created_at = self.repo.get("created_at")
         if created_at:
-            created_date = datetime.strptime(created_at, "%Y-%m-%dT%H:%M:%SZ")
+            created_date = datetime.fromisoformat(created_at.replace("Z", "+00:00"))
             age_in_days = (datetime.now(timezone.utc) - created_date).days
             return age_in_days
         return None
+
+    def repo_content(self, owner, repo_name):
+        url = f"https://api.github.com/repos/{owner}/{repo_name}/contents"
+        response = requests.get(url)
+        if response.status_code == 200:
+            print(f"Contents of the repository :" + str(response.json()))
+            return response.json()
+        else:
+            return None
     
 
 if __name__ == "__main__":
@@ -44,5 +54,5 @@ if __name__ == "__main__":
 
     analyser = RepoAnalyser(repo)
     analyser.days_since_pushed()
-
+    analyser.repo_content("homelessapi", "Abel")
     analyser.activity_level()
