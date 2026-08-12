@@ -17,15 +17,14 @@ class RepoAnalyser:
     def activity_level(self):
         activity_level = "Unknown"
         days_since_push = self.days_since_pushed()
-        if days_since_push is not None:
-            if days_since_push < 7:
-                activity_level = "Active"
-            elif 7 <= days_since_push < 21:
-                activity_level = "Moderately Active"
-            elif 60 <= days_since_push < 365:
-                activity_level = "Stale"
-            else:
-                activity_level = "Inactive"
+        if days_since_push < 7:
+            activity_level = "Active"
+        elif days_since_push < 21:
+            activity_level = "Moderately Active"
+        elif days_since_push < 60:
+            activity_level = "Stale"
+        else:
+            activity_level = "Inactive"
         return activity_level
 
     def repository_age(self):
