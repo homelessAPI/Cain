@@ -24,6 +24,8 @@ class RepoAnalyser:
             activity_level = "Moderately Active"
         elif days_since_push < 60:
             activity_level = "Stale"
+        elif days_since_push is None:
+            activity_level = "Inactive"
         else:
             activity_level = "Inactive"
         return activity_level
@@ -58,7 +60,7 @@ class RepoAnalyser:
                     repo_content["gitignore"] = True
                 elif content["name"] == "LICENSE":
                     repo_content["LICENSE"] = True
-                elif content["name"] == "Tests":
+                elif content["name"] == "Tests" or content["name"] == "Test" or content["name"] == "tests" or content["name"] == "test" or content["name"] == "__tests__":
                     repo_content["Tests"] = True
                 elif content["name"] == "Dockerfile":
                     repo_content["Dockerfile"] = True
