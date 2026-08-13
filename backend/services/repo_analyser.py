@@ -53,17 +53,16 @@ class RepoAnalyser:
 
         for content in contents:
                 if content["name"] == "README.md":
-                    self.repo_content["README.md"] = True
+                    repo_content["README.md"] = True
                 elif content["name"] == ".gitignore":
-                    self.repo_content["gitignore"] = True
+                    repo_content["gitignore"] = True
                 elif content["name"] == "LICENSE":
-                    self.repo_content["LICENSE"] = True
+                    repo_content["LICENSE"] = True
                 elif content["name"] == "Tests":
-                    self.repo_content["Tests"] = True
+                    repo_content["Tests"] = True
                 elif content["name"] == "Dockerfile":
-                    self.repo_content["Dockerfile"] = True
-                else:
-                    break
+                    repo_content["Dockerfile"] = True
+        return repo_content
  
 
 if __name__ == "__main__":
