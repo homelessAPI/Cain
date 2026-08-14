@@ -6,6 +6,7 @@ class QuslityAnanlysis:
         self.username = username
 
         self.documentation_score = 0
+        self.documentation_score_dict = {}
 
     def documentation(self):
         Fetchdata = FetchData(self.username)
@@ -17,16 +18,19 @@ class QuslityAnanlysis:
             if repo_documentation_data["README"] == True:
                 self.documentation_score += 10
 
-            elif repo_documentation_data[".gitignore"] == True:
+            if repo_documentation_data[".gitignore"] == True:
                 self.documentation_score += 10
 
-            elif repo_documentation_data["LICENSE"] == True:
+            if repo_documentation_data["LICENSE"] == True:
                 self.documentation_score += 10
 
-            elif repo_documentation_data["Tests"] == True:
+            if repo_documentation_data["Tests"] == True:
                 self.documentation_score += 10
 
-            elif repo_documentation_data["Dockerfile"] == True:
+            if repo_documentation_data["Dockerfile"] == True:
                 self.documentation_score += 10
 
-        return self.documentation_score
+            self.documentation_score_dict[i["Repo_name"]] = self.documentation_score
+            self.documentation_score = 0
+
+        return self.documentation_score_dict
