@@ -18,14 +18,15 @@ class RepoAnalyser:
     def activity_level(self):
         activity_level = "Unknown"
         days_since_push = self.days_since_pushed()
-        if days_since_push < 7:
-            activity_level = "Active"
+
+        if days_since_push is None:
+            activity_level = "Unknown"
         elif days_since_push < 21:
             activity_level = "Moderately Active"
         elif days_since_push < 60:
             activity_level = "Stale"
-        elif days_since_push is None:
-            activity_level = "Inactive"
+        elif days_since_push < 7:
+                    activity_level = "Active"
         else:
             activity_level = "Inactive"
         return activity_level
@@ -47,7 +48,7 @@ class RepoAnalyser:
 
         repo_content = {
                     "README.md": False,
-                    "gitignore": False,
+                    ".gitignore": False,
                     "LICENSE": False,
                     "Tests": False,
                     "Dockerfile": False
@@ -57,7 +58,7 @@ class RepoAnalyser:
                 if content["name"] == "README.md":
                     repo_content["README.md"] = True
                 elif content["name"] == ".gitignore":
-                    repo_content["gitignore"] = True
+                    repo_content[".gitignore"] = True
                 elif content["name"] == "LICENSE":
                     repo_content["LICENSE"] = True
                 elif content["name"] == "Tests" or content["name"] == "Test" or content["name"] == "tests" or content["name"] == "test" or content["name"] == "__tests__":
