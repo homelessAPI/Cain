@@ -21,12 +21,12 @@ class RepoAnalyser:
 
         if days_since_push is None:
             activity_level = "Unknown"
+        elif days_since_push < 7:
+            activity_level = "Active"
         elif days_since_push < 21:
             activity_level = "Moderately Active"
         elif days_since_push < 60:
             activity_level = "Stale"
-        elif days_since_push < 7:
-                    activity_level = "Active"
         else:
             activity_level = "Inactive"
         return activity_level
@@ -55,13 +55,15 @@ class RepoAnalyser:
                 }
 
         for content in contents:
+                name = content["name"].lower()
+
                 if content["name"] == "README.md":
                     repo_content["README.md"] = True
                 elif content["name"] == ".gitignore":
                     repo_content[".gitignore"] = True
                 elif content["name"] == "LICENSE":
                     repo_content["LICENSE"] = True
-                elif content["name"] == "Tests" or content["name"] == "Test" or content["name"] == "tests" or content["name"] == "test" or content["name"] == "__tests__":
+                elif name in {"test", "tests", "__tests__"}:
                     repo_content["Tests"] = True
                 elif content["name"] == "Dockerfile":
                     repo_content["Dockerfile"] = True
