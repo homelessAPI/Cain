@@ -66,15 +66,17 @@ class QuslityAnanlysis:
         if 90 <= self.percentage_repo_Score:
             self.assigned_letter = "A"
 
-        if 80 <= self.percentage_repo_Score < 90:
+        elif 80 <= self.percentage_repo_Score < 90:
                     self.assigned_letter = "B"
 
-        if 70 <= self.percentage_repo_Score < 80:
+        elif 70 <= self.percentage_repo_Score < 80:
                     self.assigned_letter = "C"
 
-        if 60 <= self.percentage_repo_Score < 70:
+        elif 60 <= self.percentage_repo_Score < 70:
                     self.assigned_letter = "D"
 
-        if self.percentage_repo_Score < 60:
+        elif self.percentage_repo_Score < 60:
                     self.assigned_letter = "F"
-        return self.percentage_repo_Score and self.assigned_letter
+
+        return {"Grade": self.percentage_repo_Score, 
+                "Score": self.assigned_letter}
