@@ -1,6 +1,5 @@
 from datetime import datetime, timezone
 from services.dataCompile import FetchData
-import requests
 
 class RepoAnalyser:
     def __init__(self, repo):
