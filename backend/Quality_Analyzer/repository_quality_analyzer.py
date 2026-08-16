@@ -41,3 +41,4 @@ class QuslityAnanlysis:
             self.documentation_score = 0
 
         return self.documentation_score_dict
+
