@@ -13,7 +13,8 @@ class QuslityAnanlysis:
         repos = Fetchdata.repos()
 
         for i in repos:
-            repo_documentation_data = repo_content_review(i["Repo_name"])
+            repo_analyser = repo_analyser(repos)
+            repo_documentation_data = repo_analyser.repo_content_review(self.username, i["Repo_name"])
 
             if repo_documentation_data["README"] == True:
                 self.documentation_score += 10
