@@ -59,20 +59,23 @@ class QuslityAnanlysis:
         repos_score = 0
 
         for i in self.Score_dict:
-            repos_score += sum(i.values())
+            for j in i:
+                  repos_score += sum(j.values())
 
         self.percentage_repo_Score = (repos_score/total_possible_score) * 100
 
-        if 90 <= self.percentage_repo_Score <= 100:
+        if 90 <= self.percentage_repo_Score:
             self.assigned_letter = "A"
 
-        if 80 <= self.percentage_repo_Score <= 89:
+        if 80 <= self.percentage_repo_Score < 90:
                     self.assigned_letter = "B"
 
-        if 70 <= self.percentage_repo_Score <= 79:
+        if 70 <= self.percentage_repo_Score < 80:
                     self.assigned_letter = "C"
 
-        if 60 <= self.percentage_repo_Score <= 69:
+        if 60 <= self.percentage_repo_Score < 70:
                     self.assigned_letter = "D"
 
+        if self.percentage_repo_Score < 60:
+                    self.assigned_letter = "F"
         return self.percentage_repo_Score
