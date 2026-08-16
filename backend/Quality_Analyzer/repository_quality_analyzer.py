@@ -40,5 +40,5 @@ class QuslityAnanlysis:
             self.Score_dict[i["Repo_name"]] + " DevOps" = self.DevOps_score
             self.documentation_score = 0
 
-        return self.documentation_score_dict
+        return self.Score_dict
 
