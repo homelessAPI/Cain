@@ -1,4 +1,4 @@
-from services.repo_analyser import repo_content_review
+from services.repo_analyser import RepoAnalyser
 from services.dataCompile import FetchData
 
 class QuslityAnanlysis:
@@ -11,10 +11,10 @@ class QuslityAnanlysis:
     def documentation(self):
         Fetchdata = FetchData(self.username)
         repos = Fetchdata.repos()
+        repos_analyser = RepoAnalyser(repos)
 
         for i in repos:
-            repo_analyser = repo_analyser(repos)
-            repo_documentation_data = repo_analyser.repo_content_review(self.username, i["Repo_name"])
+            repo_documentation_data = repos_analyser.repo_content_review(self.username, i["Repo_name"])
 
             if repo_documentation_data["README"] == True:
                 self.documentation_score += 10
