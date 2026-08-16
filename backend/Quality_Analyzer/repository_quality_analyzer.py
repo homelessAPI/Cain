@@ -43,3 +43,5 @@ class QuslityAnanlysis:
 
         return self.Score_dict
 
+    def Overall_Score():
+        pass
