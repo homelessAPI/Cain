@@ -59,7 +59,7 @@ class QuslityAnanlysis:
         repos_score = 0
 
         for i in self.Score_dict:
-            for j in i:
+            for j in i.values():
                   repos_score += sum(j.values())
 
         self.percentage_repo_Score = (repos_score/total_possible_score) * 100
