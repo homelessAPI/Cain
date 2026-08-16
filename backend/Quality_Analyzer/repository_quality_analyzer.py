@@ -20,7 +20,7 @@ class QuslityAnanlysis:
             repo_documentation_data = repos_analyser.repo_content_review(self.username, i["Repo_name"])
 
             if repo_documentation_data["README"] == True:
-                self.documentation_score += 10
+                self.Documentation_score += 10
 
             if repo_documentation_data[".gitignore"] == True:
                 self.Repo_hygiene_score += 10
@@ -32,12 +32,13 @@ class QuslityAnanlysis:
                 self.Engineering_score += 10
 
             if repo_documentation_data["Dockerfile"] == True:
-                self.DevOps += 10
+                self.DevOps_score += 10
 
-            self.Score_dict[i["Repo_name"]] + " documentation" = self.documentation_score
-            self.Score_dict[i["Repo_name"]] + " Engineering" = self.Engineering_score
-            self.Score_dict[i["Repo_name"]] + " Repo_hygiene" = self.Repo_hygiene_score
-            self.Score_dict[i["Repo_name"]] + " DevOps" = self.DevOps_score
+            self.Score_dict[i["Repo_name"]] = {"documentation": self.Documentation_score,
+                                               "Engineering_score": self.Engineering_score,
+                                               "Repo_hygiene_score": self.Repo_hygiene_score,
+                                               "DevOps_score": self.DevOps_score
+                                               }
             self.documentation_score = 0
 
         return self.Score_dict
