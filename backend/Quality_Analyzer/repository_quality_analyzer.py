@@ -39,7 +39,10 @@ class QuslityAnanlysis:
                                                "Repo_hygiene_score": self.Repo_hygiene_score,
                                                "DevOps_score": self.DevOps_score
                                                }
-            self.documentation_score = 0
+            self.Documentation_score = 0
+            self.Engineering_score = 0
+            self.Repo_hygiene_score = 0
+            self.DevOps_score = 0
 
         return self.Score_dict
 
