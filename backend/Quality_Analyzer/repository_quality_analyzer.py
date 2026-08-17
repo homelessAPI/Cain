@@ -1,12 +1,10 @@
 from services.repo_analyser import RepoAnalyser
 from services.dataCompile import FetchData
 
-class QuslityAnanlysis:
-    def __init__(self, username):
+class RepositoryQualityAnalyzer:
+    def __init__(self, username, repos):
         self.username = username
-
-        self.Fetchdata = FetchData(self.username)
-        self.repos = self.Fetchdata.repos()
+        self.repos = repos
 
         self.Documentation_score = 0
         self.Engineering_score = 0
@@ -78,5 +76,32 @@ class QuslityAnanlysis:
         elif self.percentage_repo_Score < 60:
                     self.assigned_letter = "F"
 
-        return {"Grade": self.percentage_repo_Score, 
-                "Score": self.assigned_letter}
+        return {"Score": self.percentage_repo_Score, 
+                "Grade": self.assigned_letter}
+
+
+if __name__ == "__main__":
+    analyzer = RepositoryQualityAnalyzer.__new__(RepositoryQualityAnalyzer)
+
+    analyzer.total_repo_score = 100
+    analyzer.percentage_repo_Score = 0
+    analyzer.assigned_letter = None
+
+    analyzer.Score_dict = {
+        "RepoA": {
+            "documentation": 30,
+            "Engineering_score": 30,
+            "Repo_hygiene_score": 20,
+            "DevOps_score": 20
+        },
+        "RepoB": {
+            "documentation": 30,
+            "Engineering_score": 0,
+            "Repo_hygiene_score": 10,
+            "DevOps_score": 0
+        }
+    }
+
+    result = analyzer.Overall_Score()
+
+    print(result)

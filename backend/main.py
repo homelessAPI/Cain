@@ -5,6 +5,7 @@ from services.dataCompile import FetchData
 from models.models import User
 from routes.review import router as review_router
 from routes.leaderboard import route as leaderboard_router
+from Quality_Analyzer.repository_quality_analyzer import RepositoryQualityAnalyzer
 from datetime import datetime
 import requests
 import time
@@ -44,6 +45,13 @@ def main(user: User):
     repos = fetcher.repos()
     print(f"repos: {time.time() - start:.2f}s")
 
+    quality_analyzer = RepositoryQualityAnalyzer(user.username, repos)
+
+
+    quality_analyzer.documentation()
+
+    quality_score = quality_analyzer.Overall_Score()
+
     analyser = GitHubAnalyzer(event, repos)
     print(f"analyser: {time.time() - start:.2f}s")
 
@@ -52,7 +60,14 @@ def main(user: User):
     # print("event: " + str(event) + "\n\n")
     # print("analyser: " + str(analyser.weekday_counter()) + "\n\n")
 
-    return {"events": event, "repos": repos, "users": user_profile, "Weekly_usage": analyser.weekday_counter(), "languages": analyser.language_categorizer()}
+    return {
+    "events": event,
+    "repos": repos,
+    "users": user_profile,
+    "Weekly_usage": analyser.weekday_counter(),
+    "languages": analyser.language_categorizer(),
+    "quality": quality_score
+}
 
 if __name__ == "__main__":
     main()
