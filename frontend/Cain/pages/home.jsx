@@ -36,7 +36,10 @@ function Home() {
     setLanguages,
 
     weekday,
-    setWeekday
+    setWeekday,
+
+    quality,
+    setQuality
 
 } = useContext(GithubContext );
 
@@ -85,6 +88,7 @@ function Home() {
       setUser([])
       setRepos([])
       setWeekday([])
+      setQuality(null)
       setError(data.detail || "An error occurred while fetching events.")
     } else {
       setError(null)
@@ -93,12 +97,14 @@ function Home() {
       setRepos(data.repos)
       setWeekday(data.Weekly_usage)
       setLanguages(data.languages)
+      setQuality(data.quality)
     }
     }
     catch (error) {
       setEvents([])
       setUser([])
       setRepos([])
+      setQuality(null)
       setError("An error occurred while fetching events.")
     }
     finally {
@@ -143,6 +149,13 @@ function Home() {
               </tr>
             </thead>
             <tbody>
+              {quality && (
+                  <div>
+                      <h2>Repository Quality</h2>
+                      <h1>{quality.Score}/100</h1>
+                      <h2>{quality.Grade}</h2>
+                  </div>
+              )}
               {events.map((event,index) => (
                 <tr key={index}>
                   <td>{event.type}</td>

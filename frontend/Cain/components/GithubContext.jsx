@@ -18,6 +18,8 @@ export function GithubProvider({ children }) {
 
     const [review, setReview] = useState("")
 
+    const [quality, setQuality] = useState(null);
+
     return (
 
         <GithubContext.Provider
@@ -42,7 +44,10 @@ export function GithubProvider({ children }) {
                 setWeekday,
 
                 review,
-                setReview
+                setReview,
+
+                quality,
+                setQuality,
 
             }}
         >
