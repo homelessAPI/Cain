@@ -23,19 +23,19 @@ class RepositoryQualityAnalyzer:
         for i in self.repos:
             repo_documentation_data = repos_analyser.repo_content_review(self.username, i["Repo_name"])
 
-            if repo_documentation_data["README"] == True:
+            if repo_documentation_data["README.md"]:
                 self.Documentation_score += 30
 
-            if repo_documentation_data[".gitignore"] == True:
+            if repo_documentation_data[".gitignore"]:
                 self.Repo_hygiene_score += 10
 
-            if repo_documentation_data["LICENSE"] == True:
+            if repo_documentation_data["LICENSE"]:
                 self.Repo_hygiene_score += 10
 
-            if repo_documentation_data["Tests"] == True:
+            if repo_documentation_data["Tests"]:
                 self.Engineering_score += 30
 
-            if repo_documentation_data["Dockerfile"] == True:
+            if repo_documentation_data["Dockerfile"]:
                 self.DevOps_score += 20
 
             self.Score_dict[i["Repo_name"]] = {"documentation": self.Documentation_score,
