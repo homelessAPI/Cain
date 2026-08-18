@@ -1,107 +1,103 @@
 from services.repo_analyser import RepoAnalyser
-from services.dataCompile import FetchData
+
 
 class RepositoryQualityAnalyzer:
     def __init__(self, username, repos):
         self.username = username
         self.repos = repos
 
-        self.Documentation_score = 0
-        self.Engineering_score = 0
-        self.Repo_hygiene_score = 0
-        self.DevOps_score = 0
+        self.documentation_score = 0
+        self.engineering_score = 0
+        self.repo_hygiene_score = 0
+        self.devops_score = 0
 
         self.total_repo_score = 100
-        self.percentage_repo_Score = 0
+        self.percentage_repo_score = 0
         self.assigned_letter = None
 
-        self.Score_dict = {}
+        self.score_dict = {}
 
-    def documentation(self):
+    def analyze(self):
         repos_analyser = RepoAnalyser(self.repos)
 
-        for i in self.repos:
-            repo_documentation_data = repos_analyser.repo_content_review(self.username, i["Repo_name"])
+        for repo in self.repos:
+            repo_name = repo["Repo_name"]
 
-            if repo_documentation_data["README.md"]:
-                self.Documentation_score += 30
+            repo_data = repos_analyser.repo_content_review(
+                self.username,
+                repo_name
+            )
 
-            if repo_documentation_data[".gitignore"]:
-                self.Repo_hygiene_score += 10
+            if repo_data["README.md"]:
+                self.documentation_score += 30
 
-            if repo_documentation_data["LICENSE"]:
-                self.Repo_hygiene_score += 10
+            if repo_data[".gitignore"]:
+                self.repo_hygiene_score += 10
 
-            if repo_documentation_data["Tests"]:
-                self.Engineering_score += 30
+            if repo_data["LICENSE"]:
+                self.repo_hygiene_score += 10
 
-            if repo_documentation_data["Dockerfile"]:
-                self.DevOps_score += 20
+            if repo_data["Tests"]:
+                self.engineering_score += 30
 
-            self.Score_dict[i["Repo_name"]] = {"documentation": self.Documentation_score,
-                                               "Engineering_score": self.Engineering_score,
-                                               "Repo_hygiene_score": self.Repo_hygiene_score,
-                                               "DevOps_score": self.DevOps_score
-                                               }
-            self.Documentation_score = 0
-            self.Engineering_score = 0
-            self.Repo_hygiene_score = 0
-            self.DevOps_score = 0
+            if repo_data["Dockerfile"]:
+                self.devops_score += 20
 
-        return self.Score_dict
+            self.score_dict[repo_name] = {
+                "documentation": self.documentation_score,
+                "engineering": self.engineering_score,
+                "repo_hygiene": self.repo_hygiene_score,
+                "devops": self.devops_score
+            }
 
-    def Overall_Score(self):
-        total_repos = len(self.Score_dict)
-        total_possible_score = self.total_repo_score * total_repos
+            # Reset category scores before analyzing the next repository.
+            self.documentation_score = 0
+            self.engineering_score = 0
+            self.repo_hygiene_score = 0
+            self.devops_score = 0
+
+        return self.score_dict
+
+    def overall_score(self):
+        total_repos = len(self.score_dict)
+
+        # A user can legitimately have zero public repositories.
+        if total_repos == 0:
+            self.percentage_repo_score = 0
+            self.assigned_letter = "N/A"
+
+            return {
+                "Score": 0,
+                "Grade": "N/A"
+            }
 
         repos_score = 0
 
-        for i in self.Score_dict.values():
-                repos_score += sum(i.values())
+        for repo_score in self.score_dict.values():
+            repos_score += sum(repo_score.values())
 
-        self.percentage_repo_Score = (repos_score/total_possible_score) * 100
+        total_possible_score = self.total_repo_score * total_repos
 
-        if 90 <= self.percentage_repo_Score:
+        self.percentage_repo_score = (
+            repos_score / total_possible_score
+        ) * 100
+
+        if self.percentage_repo_score >= 90:
             self.assigned_letter = "A"
 
-        elif 80 <= self.percentage_repo_Score < 90:
-                    self.assigned_letter = "B"
+        elif self.percentage_repo_score >= 80:
+            self.assigned_letter = "B"
 
-        elif 70 <= self.percentage_repo_Score < 80:
-                    self.assigned_letter = "C"
+        elif self.percentage_repo_score >= 70:
+            self.assigned_letter = "C"
 
-        elif 60 <= self.percentage_repo_Score < 70:
-                    self.assigned_letter = "D"
+        elif self.percentage_repo_score >= 60:
+            self.assigned_letter = "D"
 
-        elif self.percentage_repo_Score < 60:
-                    self.assigned_letter = "F"
+        else:
+            self.assigned_letter = "F"
 
-        return {"Score": self.percentage_repo_Score, 
-                "Grade": self.assigned_letter}
-
-
-if __name__ == "__main__":
-    analyzer = RepositoryQualityAnalyzer.__new__(RepositoryQualityAnalyzer)
-
-    analyzer.total_repo_score = 100
-    analyzer.percentage_repo_Score = 0
-    analyzer.assigned_letter = None
-
-    analyzer.Score_dict = {
-        "RepoA": {
-            "documentation": 30,
-            "Engineering_score": 30,
-            "Repo_hygiene_score": 20,
-            "DevOps_score": 20
-        },
-        "RepoB": {
-            "documentation": 30,
-            "Engineering_score": 0,
-            "Repo_hygiene_score": 10,
-            "DevOps_score": 0
+        return {
+            "Score": self.percentage_repo_score,
+            "Grade": self.assigned_letter
         }
-    }
-
-    result = analyzer.Overall_Score()
-
-    print(result)
