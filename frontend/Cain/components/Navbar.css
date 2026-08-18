@@ -1,37 +1,36 @@
 .NavbarContainer {
+
     background-color: #0d1117;
-    border-bottom: 1px solid #47445d;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, .25);
+
+    border-bottom:
+        1px solid #47445d;
+
+    box-shadow:
+        0 1px 3px rgba(0, 0, 0, .25);
 }
+
 
 .Navbar {
+
     display: flex;
+
     justify-content: space-between;
+
     align-items: center;
-    padding: 20px 40px;
+
+    padding:
+        20px 40px;
+
+    gap: 20px;
+
     flex-wrap: wrap;
+
+    box-sizing: border-box;
 }
 
-.Link {
-    text-decoration: none;
-
-    color: #c9d1d9;
-
-    font-size: 15px;
-
-    font-weight: 500;
-
-    transition: color .2s ease;
-}
-
-.Link:hover {
-    color: white;
-    background-color: #47445d;
-    padding: 5px 10px;
-    border-radius: 5px;
-}
 
 .Navbar h1 {
+
     margin: 0;
 
     color: white;
@@ -43,7 +42,144 @@
     letter-spacing: 2px;
 }
 
+
 .LinksContainer {
+
     display: flex;
+
     gap: 24px;
+
+    align-items: center;
+}
+
+
+.Link {
+
+    text-decoration: none;
+
+    color: #c9d1d9;
+
+    font-size: 15px;
+
+    font-weight: 500;
+
+    transition:
+        color .2s ease,
+        background-color .2s ease;
+}
+
+
+.Link:hover {
+
+    color: white;
+
+    background-color: #47445d;
+
+    padding:
+        5px 10px;
+
+    border-radius: 5px;
+}
+
+
+/* ==================================================
+   TABLET
+================================================== */
+
+@media (max-width: 700px) {
+
+    .Navbar {
+
+        padding:
+            16px 20px;
+
+        justify-content: center;
+
+        text-align: center;
+    }
+
+
+    .Navbar h1 {
+
+        font-size: 1.3rem;
+    }
+
+
+    .LinksContainer {
+
+        gap: 18px;
+    }
+}
+
+
+/* ==================================================
+   MOBILE
+================================================== */
+
+@media (max-width: 500px) {
+
+    .Navbar {
+
+        flex-direction: column;
+
+        padding:
+            15px 12px;
+
+        gap: 12px;
+    }
+
+
+    .Navbar h1 {
+
+        font-size: 1.25rem;
+
+        letter-spacing: 1.5px;
+    }
+
+
+    .LinksContainer {
+
+        width: 100%;
+
+        justify-content: center;
+
+        gap: 12px;
+    }
+
+
+    .Link {
+
+        font-size: 14px;
+
+        padding:
+            6px 9px;
+    }
+}
+
+
+/* ==================================================
+   VERY SMALL PHONES
+================================================== */
+
+@media (max-width: 350px) {
+
+    .Navbar h1 {
+
+        font-size: 1.1rem;
+    }
+
+
+    .LinksContainer {
+
+        gap: 6px;
+    }
+
+
+    .Link {
+
+        font-size: 13px;
+
+        padding:
+            5px 7px;
+    }
 }

@@ -16,30 +16,36 @@ body {
     color: #e6edf3;
 
     min-height: 100vh;
+
+    margin: 0;
 }
 
 
-.user-input {
+/* ---------- Search Area ---------- */
 
+.user-input {
     display: flex;
 
     justify-content: center;
-
     align-items: center;
 
     margin-top: 40px;
-
     margin-bottom: 40px;
 
+    padding: 0 20px;
+
+    box-sizing: border-box;
 }
 
 
 /* ---------- Search Card ---------- */
 
-
 .input-fieldset {
-
     width: 450px;
+
+    max-width: 100%;
+
+    box-sizing: border-box;
 
     background:
         rgba(13, 17, 23, 0.85);
@@ -55,9 +61,7 @@ body {
 
     box-shadow:
         0 0 40px rgba(99, 102, 241, 0.15);
-
 }
-
 
 
 .input-fieldset legend {
@@ -69,534 +73,633 @@ body {
     font-weight: 700;
 
     padding: 0 10px;
-
 }
 
 
-
 /* ---------- Username Input ---------- */
-
 
 .username {
 
     width: 100%;
 
-    padding: 13px 15px;
+    box-sizing: border-box;
 
+    padding: 13px 15px;
 
     background: #161b22;
 
-
     color: white;
 
-
     border:
-
         1px solid #30363d;
-
 
     border-radius: 8px;
 
-
     font-size: 16px;
-
 
     outline: none;
 
-
     transition: .25s;
-
 }
-
 
 
 .username::placeholder {
 
     color: #8b949e;
-
 }
-
 
 
 .username:focus {
 
-
     border-color: #8b5cf6;
 
-
     box-shadow:
-
         0 0 12px rgba(139, 92, 246, .45);
-
-
 }
-
 
 
 /* ---------- Search Button ---------- */
 
-
 button {
-
 
     width: 100%;
 
-
     margin-top: 15px;
-
 
     padding: 13px;
 
-
     border: none;
-
 
     border-radius: 9px;
 
-
     cursor: pointer;
-
 
     font-size: 16px;
 
-
     font-weight: 600;
-
 
     color: white;
 
-
     background:
-
         linear-gradient(135deg,
-
             #6366f1,
-
             #a855f7);
 
-
     transition: .25s;
-
 }
-
 
 
 button:hover {
 
-
     transform:
-
         translateY(-3px);
 
-
     box-shadow:
-
         0 10px 25px rgba(168, 85, 247, .35);
-
 }
 
+
+button:disabled {
+
+    cursor: not-allowed;
+
+    opacity: .65;
+
+    transform: none;
+
+    box-shadow: none;
+}
 
 
 /* ---------- Dashboard Layout ---------- */
 
-
 .output {
 
+    width: 100%;
 
     max-width: 1400px;
 
-
     margin: auto;
-
 
     padding: 20px 40px;
 
-
-}
-
-
-
-.output>.output {
-
+    box-sizing: border-box;
 
     display: grid;
 
-
     grid-template-columns:
-
-        350px 1fr;
-
+        350px minmax(0, 1fr);
 
     gap: 25px;
-
 }
-
 
 
 /* ---------- Glass Cards ---------- */
 
-
 fieldset {
 
+    min-width: 0;
+
+    box-sizing: border-box;
 
     background:
-
         rgba(13, 17, 23, .85);
 
-
     border:
-
         1px solid #30363d;
-
 
     border-radius: 16px;
 
-
     padding: 25px;
 
-
     backdrop-filter:
-
         blur(12px);
 
-
     box-shadow:
-
-
         0 20px 40px rgba(0, 0, 0, .35);
 
-
     animation:
-
         fadeIn .5s ease;
-
 }
-
 
 
 legend {
 
-
     color: #a78bfa;
-
 
     font-weight: 700;
 
-
     padding: 0 10px;
 
-
     font-size: 18px;
-
 }
-
 
 
 /* ---------- Profile ---------- */
 
-
 .user-output-fieldset {
 
-
     text-align: center;
-
-
 }
-
 
 
 .user-output-fieldset img {
 
-
     width: 130px;
-
 
     height: 130px;
 
-
     object-fit: cover;
-
 
     border-radius: 50%;
 
-
     border:
-
         3px solid #8b5cf6;
 
-
     box-shadow:
-
-
         0 0 30px rgba(139, 92, 246, .6);
 
-
     margin-bottom: 20px;
-
-
 }
-
 
 
 .user-output-fieldset h1 {
 
-
     font-size: 16px;
-
 
     font-weight: 500;
 
-
     color: #c9d1d9;
-
 
     margin: 12px 0;
 
+    overflow-wrap: anywhere;
 }
 
 
+/* ---------- Quality ---------- */
 
-/* ---------- Events Table ---------- */
+.quality-output-fieldset {
+
+    text-align: center;
+}
+
+
+.quality-score h1 {
+
+    font-size: 48px;
+
+    margin: 10px 0;
+
+    color: #ffffff;
+}
+
+
+.quality-score h2 {
+
+    margin: 8px 0;
+
+    color: #a78bfa;
+}
+
+
+/* ---------- Events ---------- */
+
+.events-output-fieldset {
+
+    grid-column: 1 / -1;
+
+    min-width: 0;
+
+    overflow: hidden;
+}
+
+
+/*
+    The wrapper/card can stay inside the viewport,
+    while the table itself is allowed to scroll.
+*/
+
+.events-list {
+
+    width: 100%;
+
+    min-width: 650px;
+
+    border-collapse: collapse;
+}
 
 
 .events-output-fieldset {
 
-
     overflow-x: auto;
 
+    -webkit-overflow-scrolling: touch;
 }
-
-
-
-.events-list {
-
-
-    width: 100%;
-
-
-    border-collapse: collapse;
-
-
-}
-
 
 
 .events-list th {
 
-
     text-align: left;
-
 
     color: #8b949e;
 
-
     font-size: 14px;
-
 
     padding: 14px;
 
-
     border-bottom:
-
         1px solid #30363d;
 
+    white-space: nowrap;
 }
-
 
 
 .events-list td {
 
-
     padding: 14px;
 
-
     border-bottom:
-
         1px solid #21262d;
-
 
     color: #c9d1d9;
 
-
+    white-space: nowrap;
 }
-
 
 
 .events-list tr {
 
-
     transition: .2s;
-
 }
-
 
 
 .events-list tr:hover {
 
-
     background:
-
         rgba(99, 102, 241, .12);
-
-
 }
-
 
 
 /* ---------- Links ---------- */
 
-
 .link {
-
 
     color: #58a6ff;
 
-
     text-decoration: none;
-
-
 }
-
 
 
 .link:hover {
 
-
     text-decoration: underline;
-
-
 }
-
 
 
 /* ---------- Analytics ---------- */
 
-
 .analysis-output-fieldset {
 
+    grid-column: 1 / -1;
 
-    grid-column:
+    min-width: 0;
 
-        1 / -1;
-
-
+    overflow: hidden;
 }
-
 
 
 .recharts-wrapper {
 
-
     margin: auto;
-
 }
-
 
 
 /* ---------- Errors ---------- */
 
-
 .error {
-
 
     color: #ff7b72;
 
-
     background:
-
         rgba(248, 81, 73, .1);
 
-
     border:
-
         1px solid #f85149;
-
 
     padding: 12px;
 
-
     border-radius: 8px;
 
+    overflow-wrap: anywhere;
 }
-
 
 
 /* ---------- Animation ---------- */
 
-
 @keyframes fadeIn {
-
 
     from {
 
-
         opacity: 0;
 
-
         transform:
-
             translateY(20px);
-
     }
-
 
 
     to {
 
-
         opacity: 1;
 
-
         transform:
-
             translateY(0);
-
     }
-
 }
 
 
+/* ==================================================
+   TABLET
+================================================== */
 
-/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
 
+    .output {
 
-@media(max-width:900px) {
+        grid-template-columns: 1fr;
 
-
-    .output>.output {
-
-
-        grid-template-columns:
-
-            1fr;
-
+        padding:
+            20px;
     }
 
+
+    .user-output-fieldset,
+    .quality-output-fieldset {
+
+        width: 100%;
+    }
+
+
+    .events-output-fieldset,
+    .analysis-output-fieldset {
+
+        grid-column: 1;
+    }
 
 
     .input-fieldset {
 
+        width: 450px;
 
-        width: 90%;
-
+        max-width: 100%;
     }
-
-
 }
 
 
+/* ==================================================
+   MOBILE
+================================================== */
 
-@media(max-width:600px) {
+@media (max-width: 600px) {
 
+    /* ---------- Search ---------- */
 
-    .output {
+    .user-input {
 
+        margin-top: 25px;
+
+        margin-bottom: 25px;
 
         padding:
-
-            15px;
-
+            0 12px;
     }
 
 
+    .input-fieldset {
+
+        width: 100%;
+
+        padding: 18px;
+
+        border-radius: 12px;
+    }
+
+
+    .input-fieldset legend {
+
+        font-size: 16px;
+    }
+
+
+    .username {
+
+        font-size: 16px;
+
+        padding:
+            12px;
+    }
+
+
+    button {
+
+        padding:
+            12px;
+    }
+
+
+    /* ---------- Dashboard ---------- */
+
+    .output {
+
+        padding:
+            10px;
+
+        gap: 15px;
+    }
+
+
+    /* ---------- Cards ---------- */
+
+    fieldset {
+
+        padding:
+            17px;
+
+        border-radius: 12px;
+    }
+
+
+    legend {
+
+        font-size: 16px;
+    }
+
+
+    /* ---------- Profile ---------- */
+
+    .user-output-fieldset img {
+
+        width: 105px;
+
+        height: 105px;
+    }
+
+
+    .user-output-fieldset h1 {
+
+        font-size: 15px;
+
+        margin:
+            9px 0;
+    }
+
+
+    /* ---------- Quality ---------- */
+
+    .quality-score h1 {
+
+        font-size: 40px;
+    }
+
+
+    .quality-score h2 {
+
+        font-size: 18px;
+    }
+
+
+    /* ---------- Events ---------- */
+
+    .events-output-fieldset {
+
+        padding:
+            12px;
+    }
+
+
+    .events-list {
+
+        min-width: 600px;
+    }
+
+
+    .events-list th,
+    .events-list td {
+
+        padding:
+            10px;
+
+        font-size: 13px;
+    }
+
+
+    /* ---------- Charts ---------- */
+
+    .analysis-output-fieldset {
+
+        padding:
+            10px;
+    }
+
+
+    .analysis-output-fieldset .recharts-responsive-container {
+
+        max-width: 100%;
+    }
+}
+
+
+/* ==================================================
+   VERY SMALL PHONES
+================================================== */
+
+@media (max-width: 400px) {
+
+    .output {
+
+        padding:
+            8px;
+
+        gap: 12px;
+    }
+
+
+    .input-fieldset {
+
+        padding:
+            15px;
+    }
+
+
+    fieldset {
+
+        padding:
+            14px;
+    }
+
+
+    .user-output-fieldset img {
+
+        width: 90px;
+
+        height: 90px;
+    }
+
+
+    .quality-score h1 {
+
+        font-size: 34px;
+    }
+
+
+    .quality-score h2 {
+
+        font-size: 16px;
+    }
+
+
+    .events-list {
+
+        min-width: 560px;
+    }
 }
