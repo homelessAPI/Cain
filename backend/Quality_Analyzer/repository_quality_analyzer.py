@@ -56,6 +56,7 @@ class RepositoryQualityAnalyzer:
             self.repo_hygiene_score = 0
             self.devops_score = 0
 
+        print("score dict: " + str(self.score_dict))
         return self.score_dict
 
     def overall_score(self):
@@ -68,7 +69,8 @@ class RepositoryQualityAnalyzer:
 
             return {
                 "Score": 0,
-                "Grade": "N/A"
+                "Grade": "N/A",
+                
             }
 
         repos_score = 0
