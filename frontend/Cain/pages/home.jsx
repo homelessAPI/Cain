@@ -334,96 +334,6 @@ function Home() {
 
 
         {/* -------------------------------- */}
-        {/* GitHub events */}
-        {/* -------------------------------- */}
-
-        <fieldset className="events-output-fieldset">
-
-          <legend>Activity</legend>
-
-
-          {error && (
-            <p className="error">
-              {error}
-            </p>
-          )}
-
-
-          <table className="events-list">
-
-            <thead>
-
-              <tr className="events-list-header">
-
-                <th>
-                  Event Type
-                </th>
-
-                <th>
-                  Repository
-                </th>
-
-                <th>
-                  Created At
-                </th>
-
-                <th>
-                  Public
-                </th>
-
-              </tr>
-
-            </thead>
-
-
-            <tbody>
-
-              {events.map((event, index) => (
-
-                <tr key={index}>
-
-                  <td>
-                    {event.type}
-                  </td>
-
-
-                  <td>
-
-                    <a
-                      className="link"
-                      href={event.repository_url}
-                      target="_blank"
-                      rel="noreferrer"
-                    >
-                      {event.repository.split("/")[1]}
-                    </a>
-
-                  </td>
-
-
-                  <td>
-                    {new Date(
-                      event.created_at
-                    ).toLocaleString()}
-                  </td>
-
-
-                  <td>
-                    {event.public ? "Yes" : "No"}
-                  </td>
-
-                </tr>
-
-              ))}
-
-            </tbody>
-
-          </table>
-
-        </fieldset>
-
-
-        {/* -------------------------------- */}
         {/* Analysis */}
         {/* -------------------------------- */}
 
@@ -605,6 +515,95 @@ function Home() {
         </fieldset>
 
       </div>
+
+      {/* -------------------------------- */}
+        {/* GitHub events */}
+        {/* -------------------------------- */}
+
+        <fieldset className="events-output-fieldset">
+
+          <legend>Activity</legend>
+
+
+          {error && (
+            <p className="error">
+              {error}
+            </p>
+          )}
+
+
+          <table className="events-list">
+
+            <thead>
+
+              <tr className="events-list-header">
+
+                <th>
+                  Event Type
+                </th>
+
+                <th>
+                  Repository
+                </th>
+
+                <th>
+                  Created At
+                </th>
+
+                <th>
+                  Public
+                </th>
+
+              </tr>
+
+            </thead>
+
+
+            <tbody>
+
+              {events.map((event, index) => (
+
+                <tr key={index}>
+
+                  <td>
+                    {event.type}
+                  </td>
+
+
+                  <td>
+
+                    <a
+                      className="link"
+                      href={event.repository_url}
+                      target="_blank"
+                      rel="noreferrer"
+                    >
+                      {event.repository.split("/")[1]}
+                    </a>
+
+                  </td>
+
+
+                  <td>
+                    {new Date(
+                      event.created_at
+                    ).toLocaleString()}
+                  </td>
+
+
+                  <td>
+                    {event.public ? "Yes" : "No"}
+                  </td>
+
+                </tr>
+
+              ))}
+
+            </tbody>
+
+          </table>
+
+        </fieldset>
     </>
   );
 }

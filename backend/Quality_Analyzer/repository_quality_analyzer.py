@@ -92,13 +92,11 @@ class RepositoryQualityAnalyzer:
 
             self.devops_total += repo_score["devops"]
 
-            repos_score += sum(repo_score.values())
-
         self.categories = {
-            "documentation_percentage": (self.documentation_total / (30 * total_repos)) * 100,
-            "engineering_percentage": (self.engineering_total / (30 * total_repos)) * 100,
-            "repo_hygiene_percentage": (self.repo_hygiene_total / (20 * total_repos)) * 100,
-            "devops_percentage": (self.devops_total / (20 * total_repos)) * 100
+            "documentation": (self.documentation_total / (30 * total_repos)) * 100,
+            "engineering": (self.engineering_total / (30 * total_repos)) * 100,
+            "repo_hygiene": (self.repo_hygiene_total / (20 * total_repos)) * 100,
+            "devops": (self.devops_total / (20 * total_repos)) * 100
         }
 
         total_possible_score = self.total_repo_score * total_repos
