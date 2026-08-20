@@ -405,18 +405,25 @@ function Home() {
               />
 
 
-              <Tooltip
-                cursor={{
-                  fill: "rgba(99,102,241,0.1)"
-                }}
-
-                contentStyle={{
-                  borderRadius: "10px",
-                  border: "none",
-                  boxShadow:
-                    "0 8px 20px rgba(0,0,0,.15)"
-                }}
-              />
+             <Tooltip
+  cursor={{
+    fill: "rgba(99,102,241,0.1)"
+  }}
+  contentStyle={{
+    backgroundColor: "#ffffff",
+    borderRadius: "10px",
+    border: "1px solid #e5e7eb",
+    boxShadow: "0 8px 20px rgba(0,0,0,.15)",
+    color: "#111827"
+  }}
+  labelStyle={{
+    color: "#111827",
+    fontWeight: "600"
+  }}
+  itemStyle={{
+    color: "#374151"
+  }}
+/>
 
 
               <Bar
@@ -473,8 +480,21 @@ function Home() {
               />
 
 
-              <Tooltip />
-
+              <Tooltip
+  contentStyle={{
+    backgroundColor: "#ffffff",
+    borderRadius: "10px",
+    border: "1px solid #e5e7eb",
+    boxShadow: "0 8px 20px rgba(0,0,0,.15)"
+  }}
+  labelStyle={{
+    color: "#111827",
+    fontWeight: "600"
+  }}
+  itemStyle={{
+    color: "#374151"
+  }}
+/>
 
               <Bar
                 dataKey="count"
