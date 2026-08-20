@@ -2,97 +2,164 @@ from fastapi import HTTPException
 from datetime import datetime
 import requests
 
+
 class FetchData:
-    # Intalizations
+
     def __init__(self, username: str):
         self.username = username
+
         self.url = f"https://api.github.com/users/{username}"
         self.events_url = f"https://api.github.com/users/{username}/events"
         self.repos_url = f"https://api.github.com/users/{username}/repos"
 
-        self.url_response = requests.get(self.url)
-        self.events_response = requests.get(self.events_url)
-        self.repos_response = requests.get(self.repos_url)
+    # -------------------------
+    # USER
+    # -------------------------
 
-        self.url_data = self.url_response.json()
-        self.events_data = self.events_response.json()
-        self.repos_data = self.repos_response.json()
+    def fetch_user_info(self):
+        response = requests.get(self.url)
 
-        self.user_data = {}
-        self.events_list = []
-        self.repos_list = []
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail="Failed to fetch user data"
+            )
+
+        data = response.json()
+
+        if not data:
+            raise HTTPException(
+                status_code=404,
+                detail="User profile is empty"
+            )
+
+        return data
 
     def user_info(self):
-        
-        if self.url_response.status_code != 200:
-            raise HTTPException(status_code=self.url_response.status_code, detail="Faild to fetch user data")
-        elif self.url_response.status_code == []:
-            raise HTTPException(status_code=self.url_response.status_code, detail="User profile is empty")
-        elif self.url_response.status_code == 200:
-            self.user_data  = {
-                    "profile": self.url_data["avatar_url"],
-                    "following": self.url_data["following"],
-                    "followers": self.url_data["followers"],
-                    "public_repos": self.url_data["public_repos"],
-                    "company": self.url_data["company"],
-                    "hireable": self.url_data["hireable"],
-                    "bio": self.url_data["bio"]
-                    }
-            
-            return self.user_data 
+        data = self.fetch_user_info()
 
-    # Method to fetch, process and return data from the events url
+        return {
+            "profile": data["avatar_url"],
+            "following": data["following"],
+            "followers": data["followers"],
+            "public_repos": data["public_repos"],
+            "company": data["company"],
+            "hireable": data["hireable"],
+            "bio": data["bio"]
+        }
+
+    # -------------------------
+    # EVENTS
+    # -------------------------
+
+    def fetch_events_info(self):
+        response = requests.get(self.events_url)
+
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail="Failed to retrieve event data"
+            )
+
+        data = response.json()
+
+        return data
+
     def events(self):
+        events_data = self.fetch_events_info()
 
-        if self.events_response.status_code != 200:
-            raise HTTPException(status_code=self.events_response.status_code, detail="Failed to retrive event data")
-        
-        elif self.events_data == []:
-            raise HTTPException(status_code=self.events_response.status_code, detail="No event data found.")
+        if not events_data:
+            return []
 
-        elif self.events_response.status_code == 200:
+        events_list = []
 
-            for i in self.events_data:
-                date = datetime.fromisoformat(i["created_at"].replace("Z", "+00:00"))
+        for event in events_data:
+            created_at = datetime.fromisoformat(
+                event["created_at"].replace("Z", "+00:00")
+            )
 
-                self.events_list.append({
-                    "type": i["type"],
-                    "repository": i["repo"]["name"],
-                    "repository_url": f"https://github.com/{i['repo']['name']}",
-                    "created_at": date,
-                    "public": i["public"]
+            events_list.append({
+                "type": event["type"],
+                "repository": event["repo"]["name"],
+                "repository_url": f"https://github.com/{event['repo']['name']}",
+                "created_at": created_at,
+                "public": event["public"]
             })
-        #print("Url: " + str(self.url_data) + "\n\n")
-        #print("event: " + str(self.events_data) + "\n\n")
-        #print("Repos: " + str(self.repos_data) + "\n\n")
-        return self.events_list
-        
-    # Method to fetch, process and retuan data from the repos url
+
+        return events_list
+
+    # -------------------------
+    # REPOSITORIES
+    # -------------------------
+
+    def fetch_repos(self):
+        page = 1
+        all_repos = []
+
+        while True:
+            response = requests.get(
+                self.repos_url,
+                params={
+                    "page": page,
+                    "per_page": 100
+                }
+            )
+
+            if response.status_code != 200:
+                raise HTTPException(
+                    status_code=response.status_code,
+                    detail="Failed to retrieve repo data"
+                )
+
+            data = response.json()
+
+            if not data:
+                break
+
+            all_repos.extend(data)
+            page += 1
+
+        return all_repos
+
     def repos(self):
-        if self.repos_response.status_code != 200:
-            raise HTTPException(status_code=self.repos_response.status_code, detail="Failed to retrive repo data")
-        
-        elif self.repos_data == []:
-            raise HTTPException(status_code=self.repos_response.status_code, detail="No repo data found.")
-        elif self.repos_response.status_code == 200:
-            for j in self.repos_data:
-                self.repos_list.append({
-                    "Repo_name": j["name"],
-                    "description": j['description'],
-                    "Private": j['private'],
-                    "created_at": j['created_at'],
-                    "updated_at": j['updated_at'],
-                    "forks": j['forks'],
-                    "stargazers_count": j['stargazers_count'],
-                    "watchers_count": j['watchers_count'],
-                    "size": j['size'],
-                    "default_branch": j['default_branch'],
-                    "open_issues_count": j['open_issues_count'],
-                    "pushed_at": j['pushed_at'],
-                    "owner": j['owner']['login'],
-                    "language": j['language'],
-                    "repo_url": j['html_url']
-                })
+        repos_data = self.fetch_repos()
 
-            return self.repos_list
+        repos_list = []
 
+        for repo in repos_data:
+            repos_list.append({
+                "Repo_name": repo["name"],
+                "description": repo["description"],
+                "Private": repo["private"],
+                "created_at": repo["created_at"],
+                "updated_at": repo["updated_at"],
+                "forks": repo["forks"],
+                "stargazers_count": repo["stargazers_count"],
+                "watchers_count": repo["watchers_count"],
+                "size": repo["size"],
+                "default_branch": repo["default_branch"],
+                "open_issues_count": repo["open_issues_count"],
+                "pushed_at": repo["pushed_at"],
+                "owner": repo["owner"]["login"],
+                "language": repo["language"],
+                "repo_url": repo["html_url"]
+            })
+
+        return repos_list
+
+    # -------------------------
+    # REPOSITORY CONTENTS
+    # -------------------------
+
+    def repo_contents(self, owner, repo_name):
+        url = f"https://api.github.com/repos/{owner}/{repo_name}/contents"
+
+        response = requests.get(url)
+
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail="Failed to retrieve repository content"
+            )
+
+        return response.json()
