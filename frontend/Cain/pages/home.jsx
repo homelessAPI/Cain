@@ -294,6 +294,38 @@ function Home() {
                 Grade: {quality.Grade}
               </h2>
 
+              <div className="quality-categories">
+
+              <div>
+                  <h3>Documentation</h3>
+                  <p>
+                      {quality.Categories.documentation.toFixed(1)}%
+                  </p>
+              </div>
+
+              <div>
+                  <h3>Engineering</h3>
+                  <p>
+                      {quality.Categories.engineering.toFixed(1)}%
+                  </p>
+              </div>
+
+              <div>
+                  <h3>Repository Hygiene</h3>
+                  <p>
+                      {quality.Categories.repo_hygiene.toFixed(1)}%
+                  </p>
+              </div>
+
+              <div>
+                  <h3>DevOps</h3>
+                  <p>
+                      {quality.Categories.devops.toFixed(1)}%
+                  </p>
+              </div>
+
+          </div>
+
             </div>
 
           </fieldset>

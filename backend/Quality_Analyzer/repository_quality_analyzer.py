@@ -11,11 +11,17 @@ class RepositoryQualityAnalyzer:
         self.repo_hygiene_score = 0
         self.devops_score = 0
 
+        self.documentation_total = 0
+        self.engineering_total = 0
+        self.repo_hygiene_total = 0
+        self.devops_total = 0
+
         self.total_repo_score = 100
         self.percentage_repo_score = 0
         self.assigned_letter = None
 
         self.score_dict = {}
+        self.categories = {}
 
     def analyze(self):
         repos_analyser = RepoAnalyser(self.repos)
@@ -78,6 +84,23 @@ class RepositoryQualityAnalyzer:
         for repo_score in self.score_dict.values():
             repos_score += sum(repo_score.values())
 
+            self.documentation_total += repo_score["documentation"]
+
+            self.engineering_total += repo_score["engineering"]
+
+            self.repo_hygiene_total += repo_score["repo_hygiene"]
+
+            self.devops_total += repo_score["devops"]
+
+            repos_score += sum(repo_score.values())
+
+        self.categories = {
+            "documentation_percentage": (self.documentation_total / (30 * total_repos)) * 100,
+            "engineering_percentage": (self.engineering_total / (30 * total_repos)) * 100,
+            "repo_hygiene_percentage": (self.repo_hygiene_total / (20 * total_repos)) * 100,
+            "devops_percentage": (self.devops_total / (20 * total_repos)) * 100
+        }
+
         total_possible_score = self.total_repo_score * total_repos
 
         self.percentage_repo_score = (
@@ -101,5 +124,6 @@ class RepositoryQualityAnalyzer:
 
         return {
             "Score": self.percentage_repo_score,
-            "Grade": self.assigned_letter
+            "Grade": self.assigned_letter,
+            "Categories": self.categories
         }
