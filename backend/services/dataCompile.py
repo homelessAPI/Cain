@@ -18,6 +18,7 @@ class FetchData:
 
     def fetch_user_info(self):
         response = requests.get(self.url)
+        print(f"user_info: {self.url}")
 
         if response.status_code != 200:
             raise HTTPException(
@@ -26,6 +27,7 @@ class FetchData:
             )
 
         data = response.json()
+        print(f"User info data: {data}")
 
         if not data:
             raise HTTPException(
