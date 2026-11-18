@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from datetime import datetime
 import requests
+import base64
 
 
 class FetchData:
@@ -125,8 +126,8 @@ class FetchData:
 
     def repos(self):
         repos_data = self.fetch_repos()
-
         repos_list = []
+        Readme_dict = {}
 
         for repo in repos_data:
             repos_list.append({
@@ -147,21 +148,35 @@ class FetchData:
                 "repo_url": repo["html_url"]
             })
 
+            
         return repos_list
 
     # -------------------------
     # REPOSITORY CONTENTS
     # -------------------------
 
-    def repo_contents(self, owner, repo_name):
-        url = f"https://api.github.com/repos/{owner}/{repo_name}/contents"
+    def repo_contents(self):
+        repos_list = self.repos()
+        Readme_dict = {}
+        Readme_Content = {}
 
-        response = requests.get(url)
+        for repo in repos_list:
+            readme_url = f"https://api.github.com/repos/{self.username}/{repo['Repo_name']}/readme"
+            readme_response = requests.get(readme_url)
+            Readme_dict[repo["Repo_name"]] = readme_response.json()
 
-        if response.status_code != 200:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail="Failed to retrieve repository content"
-            )
+        for repo_name, readme_data in Readme_dict.items():
+            if "content" in readme_data:
+                content = readme_data["content"]
+                decoded_content = base64.b64decode(content).decode("utf-8")
+                Readme_Content[repo_name] = decoded_content
+                Readme_dict[repo_name]["decoded_content"] = decoded_content
+            else:
+                Readme_dict[repo_name]["decoded_content"] = None
+                Readme_Content[repo_name] = None
 
-        return response.json()
+        print(f"Readme_Content: {Readme_Content}")
+
+        return Readme_Content
+
+    
