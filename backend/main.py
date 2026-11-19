@@ -26,7 +26,7 @@ app.add_middleware(
 
 
 @app.post("/health")
-def main():
+def health():
     return {"status": "ok"}
 
 
