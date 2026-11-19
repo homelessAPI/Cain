@@ -1,6 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
+from services.analyser import GitHubAnalyzer
 from services.dataCompile import FetchData
 from models.models import User
 from Quality_Analyzer.repository_quality_analyzer import RepositoryQualityAnalyzer
@@ -37,8 +38,13 @@ def main(user: User):
     fetcher = FetchData(user.username)
 
     user_profile = fetcher.user_info()
+    events = fetcher.events()
     repos = fetcher.repos()
-    repo_contents = fetcher.repo_contents()
+    repo_contents = fetcher.repo_contents(repos)
+
+    profile_analyzer = GitHubAnalyzer(events, repos)
+    weekly_usage = profile_analyzer.weekday_counter()
+    languages = profile_analyzer.language_categorizer()
 
     if repos:
         quality_analyzer = RepositoryQualityAnalyzer(repos[0])
@@ -76,5 +82,7 @@ def main(user: User):
         "total_readme_score": total_readme_score,
         "max_readme_score": max_readme_score,
         "readme_percentage": readme_percentage,
+        "Weekly_usage": weekly_usage,
+        "languages": languages,
         "users": user_profile,
     }
