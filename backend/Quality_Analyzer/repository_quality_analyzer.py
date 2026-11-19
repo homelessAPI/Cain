@@ -24,8 +24,9 @@ class RepositoryQualityAnalyzer:
             "activity_level": activity_level
         }
 
-    def readme_quality(self):
-        contents_dict = self.fetcher.repo_contents()
+    def readme_quality(self, contents_dict=None):
+        if contents_dict is None:
+            contents_dict = self.fetcher.repo_contents()
         readme_quality_dict = {}
         repo_readme_score = {}
 
