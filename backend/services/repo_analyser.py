@@ -4,8 +4,13 @@ from services.dataCompile import FetchData
 class RepoAnalyser:
     def __init__(self, repo):
         self.repo = repo
-        self.fetcher = FetchData(repo.get("owner", {}).get("login", ""))
-    
+
+        owner = repo.get("owner", "")
+        if isinstance(owner, dict):
+            owner = owner.get("login", "")
+
+        self.fetcher = FetchData(owner)
+
     def repository_age(self):
         created_at = self.repo.get("created_at")
         if created_at:
@@ -15,14 +20,12 @@ class RepoAnalyser:
         return None
 
     def days_since_last_push(self):
-        
         pushed_at = self.repo.get("pushed_at")
         if pushed_at:
             pushed_date = datetime.fromisoformat(pushed_at.replace("Z", "+00:00"))
             days_since_push = (datetime.now(timezone.utc) - pushed_date).days
             return days_since_push
         return None
-
 
     def activity_level(self):
         activity_level = "Unknown"
@@ -40,7 +43,6 @@ class RepoAnalyser:
             activity_level = "Inactive"
         return activity_level
 
-    
 
 if __name__ == "__main__":
     repo = {
