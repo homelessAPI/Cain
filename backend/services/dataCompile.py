@@ -19,7 +19,7 @@ class FetchData:
 
     def fetch_user_info(self):
         response = requests.get(self.url)
-        print(f"user_info: {self.url}")
+        #print(f"user_info: {self.url}")
 
         if response.status_code != 200:
             raise HTTPException(
@@ -28,7 +28,7 @@ class FetchData:
             )
 
         data = response.json()
-        print(f"User info data: {data}")
+        #print(f"User info data: {data}")
 
         if not data:
             raise HTTPException(
@@ -175,7 +175,7 @@ class FetchData:
                 Readme_dict[repo_name]["decoded_content"] = None
                 Readme_Content[repo_name] = None
 
-        print(f"Readme_Content: {Readme_Content}")
+        #print(f"Readme_Content: {Readme_Content}")
 
         return Readme_Content
 
