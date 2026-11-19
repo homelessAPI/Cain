@@ -1,7 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from services.analyser import GitHubAnalyzer
 from services.dataCompile import FetchData
 from models.models import User
 from Quality_Analyzer.repository_quality_analyzer import RepositoryQualityAnalyzer
@@ -38,24 +37,44 @@ def main(user: User):
     fetcher = FetchData(user.username)
 
     user_profile = fetcher.user_info()
-    events = fetcher.events()
     repos = fetcher.repos()
     repo_contents = fetcher.repo_contents()
 
     if repos:
         quality_analyzer = RepositoryQualityAnalyzer(repos[0])
-        readme_quality, readme_scores = quality_analyzer.readme_quality(repo_contents)
+
+        (
+            readme_quality,
+            readme_scores,
+            readme_reasons,
+            total_readme_score
+        ) = quality_analyzer.readme_quality(repo_contents)
     else:
         readme_quality = {}
         readme_scores = {}
+        readme_reasons = {}
+        total_readme_score = 0
+
+    max_readme_score = len(repo_contents) * 5
+
+    if max_readme_score:
+        readme_percentage = round(
+            total_readme_score / max_readme_score * 100,
+            1
+        )
+    else:
+        readme_percentage = 0
 
     print(f"analyser: {time.time() - start:.2f}s")
 
     return {
-        "events": events,
         "repos": repos,
         "repo_contents": repo_contents,
         "readme_quality": readme_quality,
         "readme_scores": readme_scores,
+        "readme_reasons": readme_reasons,
+        "total_readme_score": total_readme_score,
+        "max_readme_score": max_readme_score,
+        "readme_percentage": readme_percentage,
         "users": user_profile,
     }
