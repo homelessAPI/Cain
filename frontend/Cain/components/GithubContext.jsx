@@ -8,8 +8,6 @@ export function GithubProvider({ children }) {
 
     const [user, setUser] = useState(null);
 
-    const [events, setEvents] = useState([]);
-
     const [repos, setRepos] = useState([]);
 
     const [languages, setLanguages] = useState([]);
@@ -30,9 +28,6 @@ export function GithubProvider({ children }) {
 
                 user,
                 setUser,
-
-                events,
-                setEvents,
 
                 repos,
                 setRepos,
