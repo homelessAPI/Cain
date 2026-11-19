@@ -35,20 +35,20 @@ def main(user: User):
 
     fetcher = FetchData(user.username)
 
-    print(f"FetchData initialized: {time.time() - start:.2f}s")
+    #print(f"FetchData initialized: {time.time() - start:.2f}s")
 
     user_profile = fetcher.user_info()
 
-    print(f"user profile: {time.time() - start:.2f}s")
+    #print(f"user profile: {time.time() - start:.2f}s")
 
     events = fetcher.events()
 
-    print(f"events: {time.time() - start:.2f}s")
+    #print(f"events: {time.time() - start:.2f}s")
 
     repos = fetcher.repos()
     repo_contents = fetcher.repo_contents()
 
-    print(f"repos: {time.time() - start:.2f}s")
+    #print(f"repos: {time.time() - start:.2f}s")
 
 
     # -----------------------------
