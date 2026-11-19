@@ -35,48 +35,27 @@ def main(user: User):
 
     start = time.time()
 
-    # -----------------------------
-    # Fetch GitHub data
-    # -----------------------------
-
     fetcher = FetchData(user.username)
 
-    #print(f"FetchData initialized: {time.time() - start:.2f}s")
-
     user_profile = fetcher.user_info()
-
-    #print(f"user profile: {time.time() - start:.2f}s")
-
     events = fetcher.events()
-
-    #print(f"events: {time.time() - start:.2f}s")
-
     repos = fetcher.repos()
     repo_contents = fetcher.repo_contents()
 
-    #print(f"repos: {time.time() - start:.2f}s")
-
-
-    # -----------------------------
-    # Repository quality analysis
-    # -----------------------------
-
-    # -----------------------------
-    # General GitHub analysis
-    # -----------------------------
-
-    
+    if repos:
+        quality_analyzer = RepositoryQualityAnalyzer(repos[0])
+        readme_quality, readme_scores = quality_analyzer.readme_quality(repo_contents)
+    else:
+        readme_quality = {}
+        readme_scores = {}
 
     print(f"analyser: {time.time() - start:.2f}s")
-
-
-    # -----------------------------
-    # Response
-    # -----------------------------
 
     return {
         "events": events,
         "repos": repos,
         "repo_contents": repo_contents,
+        "readme_quality": readme_quality,
+        "readme_scores": readme_scores,
         "users": user_profile,
     }
