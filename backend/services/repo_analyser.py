@@ -4,6 +4,7 @@ from services.dataCompile import FetchData
 class RepoAnalyser:
     def __init__(self, repo):
         self.repo = repo
+        self.fetcher = FetchData(repo.get("owner", {}).get("login", ""))
     
     def repository_age(self):
         created_at = self.repo.get("created_at")
@@ -39,9 +40,7 @@ class RepoAnalyser:
             activity_level = "Inactive"
         return activity_level
 
-
-
- 
+    
 
 if __name__ == "__main__":
     repo = {
