@@ -27,8 +27,10 @@ class RepositoryQualityAnalyzer:
     def readme_quality(self, contents_dict=None):
         if contents_dict is None:
             contents_dict = self.fetcher.repo_contents()
+
         readme_quality_dict = {}
         repo_readme_score = {}
+        readme_reasons = {}
 
         sections = [
             "features",
@@ -39,22 +41,76 @@ class RepositoryQualityAnalyzer:
         ]
 
         for repo_name, readme_content in contents_dict.items():
+            repo_readme_score[repo_name] = 0
+            readme_reasons[repo_name] = {
+                "earned": [],
+                "missing": []
+            }
+
             if not readme_content:
                 readme_quality_dict[repo_name] = "No README"
-                repo_readme_score[repo_name] = 0
+
+                for section in sections:
+                    readme_reasons[repo_name]["missing"].append(
+                        f"Missing {section.title()} section."
+                    )
+
                 continue
 
-            readme_content = readme_content.lower()
-            repo_readme_score[repo_name] = 0
+            lines = readme_content.lower().splitlines()
 
             for section in sections:
-                if any(
-                    line.strip().lstrip("#").strip() == section
-                    for line in readme_content.splitlines()
-                ):
+                section_found = False
+                section_has_content = False
+
+                for index, line in enumerate(lines):
+                    heading = line.strip().lstrip("#").strip()
+
+                    if heading == section and line.strip().startswith("#"):
+                        section_found = True
+
+                        for next_line in lines[index + 1:]:
+                            next_heading = next_line.strip()
+
+                            if next_heading.startswith("#"):
+                                break
+
+                            if next_heading:
+                                section_has_content = True
+                                break
+
+                        break
+
+                if section_found and section_has_content:
                     repo_readme_score[repo_name] += 1
+                    readme_reasons[repo_name]["earned"].append(
+                        f"{section.title()}: section found with content."
+                    )
+                elif section_found:
+                    readme_reasons[repo_name]["missing"].append(
+                        f"{section.title()}: heading found, but no content follows it."
+                    )
+                else:
+                    readme_reasons[repo_name]["missing"].append(
+                        f"Missing {section.title()} section."
+                    )
 
-            readme_quality = "Good" if repo_readme_score[repo_name] >= 3 else "Poor"
-            readme_quality_dict[repo_name] = readme_quality
+            score = repo_readme_score[repo_name]
 
-        return readme_quality_dict, repo_readme_score
+            if score == 5:
+                readme_quality_dict[repo_name] = "Excellent"
+            elif score == 4:
+                readme_quality_dict[repo_name] = "Good"
+            elif score == 3:
+                readme_quality_dict[repo_name] = "Fair"
+            else:
+                readme_quality_dict[repo_name] = "Needs work"
+
+        total_readme_score = sum(repo_readme_score.values())
+
+        return (
+            readme_quality_dict,
+            repo_readme_score,
+            readme_reasons,
+            total_readme_score
+        )
