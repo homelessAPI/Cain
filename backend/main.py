@@ -17,7 +17,8 @@ app.add_middleware(
     allow_origins=[
         "http://localhost:5173",
         "https://cain-sable.vercel.app",
-        "https://cain-o9bfz6c95-spade2.vercel.app"
+        "https://cain-o9bfz6c95-spade2.vercel.app",
+        "https://cain-git-main-spade2.vercel.app",
     ],
     allow_credentials=True,
     allow_methods=["*"],
