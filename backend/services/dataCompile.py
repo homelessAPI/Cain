@@ -155,8 +155,9 @@ class FetchData:
     # REPOSITORY CONTENTS
     # -------------------------
 
-    def repo_contents(self):
-        repos_list = self.repos()
+    def repo_contents(self, repos_list=None):
+        if repos_list is None:
+            repos_list = self.repos()
         Readme_dict = {}
         Readme_Content = {}
 
