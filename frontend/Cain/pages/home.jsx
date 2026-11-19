@@ -15,25 +15,6 @@ import {
 import "./home.css";
 import Navbar from "../components/Navbar";
 
-function QualityBar({ name, score }) {
-  const safeScore = Number.isFinite(score) ? Math.max(0, Math.min(100, score)) : 0;
-
-  return (
-    <div className="quality-category">
-      <div className="quality-category-header">
-        <span>{name}</span>
-        <strong>{Number.isFinite(score) ? `${safeScore.toFixed(1)}%` : "—"}</strong>
-      </div>
-
-      <div className="quality-bar-background">
-        <div
-          className="quality-bar-fill"
-          style={{ width: `${safeScore}%` }}
-        />
-      </div>
-    </div>
-  );
-}
 
 function Home() {
   const [error, setError] = useState(null);
@@ -44,8 +25,6 @@ function Home() {
     setUsername,
     user,
     setUser,
-    events,
-    setEvents,
     repos,
     setRepos,
     languages,
@@ -61,7 +40,6 @@ function Home() {
   );
 
   function clearData() {
-    setEvents([]);
     setUser(null);
     setRepos([]);
     setLanguages([]);
@@ -107,12 +85,19 @@ function Home() {
 
       localStorage.setItem("data", JSON.stringify(data));
 
-      setEvents(data.events || []);
       setUser(data.users || null);
       setRepos(data.repos || []);
       setWeekday(data.Weekly_usage || {});
       setLanguages(data.languages || []);
-      setQuality(data.quality || null);
+
+      setQuality({
+        readme_quality: data.readme_quality || {},
+        readme_scores: data.readme_scores || {},
+        readme_reasons: data.readme_reasons || {},
+        total_readme_score: data.total_readme_score || 0,
+        max_readme_score: data.max_readme_score || 0,
+        readme_percentage: data.readme_percentage || 0
+      });
     } catch (error) {
       console.error(error);
       clearData();
@@ -122,13 +107,8 @@ function Home() {
     }
   }
 
-  const categories = quality?.Categories
-    ? [
-        { name: "Documentation", score: quality.Categories.documentation },
-        { name: "Engineering", score: quality.Categories.engineering },
-        { name: "Repository Hygiene", score: quality.Categories.repo_hygiene },
-        { name: "DevOps", score: quality.Categories.devops }
-      ]
+  const readmeResults = quality
+    ? Object.entries(quality.readme_scores || {})
     : [];
 
   return (
@@ -200,31 +180,65 @@ function Home() {
 
           {quality && (
             <fieldset className="quality-output-fieldset">
-              <legend>Repository Quality</legend>
+              <legend>README Quality</legend>
 
-              <div className="quality-score">
-                <span className="quality-label">Overall score</span>
+              <div className="readme-total">
+                <span className="quality-label">Total README score</span>
 
                 <div className="quality-score-number">
-                  {Number.isFinite(quality.Score)
-                    ? quality.Score.toFixed(1)
-                    : "—"}
-                  <span>/100</span>
+                  {quality.total_readme_score}
+                  <span>/{quality.max_readme_score}</span>
                 </div>
 
                 <div className="quality-grade">
-                  Grade: {quality.Grade || "N/A"}
+                  {quality.readme_percentage}% across all repositories
                 </div>
 
-                <div className="quality-categories">
-                  {categories.map((category) => (
-                    <QualityBar
-                      key={category.name}
-                      name={category.name}
-                      score={category.score}
-                    />
-                  ))}
-                </div>
+                <p className="readme-score-explanation">
+                  Each README can earn 5 points: one for each section that
+                  exists and contains content.
+                </p>
+              </div>
+
+              <div className="readme-repositories">
+                {readmeResults.map(([repoName, score]) => {
+                  const reasons = quality.readme_reasons?.[repoName] || {};
+                  const grade = quality.readme_quality?.[repoName] || "N/A";
+
+                  return (
+                    <div className="readme-repository" key={repoName}>
+                      <div className="readme-repository-header">
+                        <div>
+                          <h3>{repoName}</h3>
+                          <span className="readme-grade">{grade}</span>
+                        </div>
+
+                        <strong>{score}/5</strong>
+                      </div>
+
+                      <div className="quality-bar-background">
+                        <div
+                          className="quality-bar-fill"
+                          style={{ width: `${score * 20}%` }}
+                        />
+                      </div>
+
+                      <div className="readme-reasons">
+                        {(reasons.earned || []).map((reason, index) => (
+                          <p className="reason-earned" key={index}>
+                            <span>+</span> {reason}
+                          </p>
+                        ))}
+
+                        {(reasons.missing || []).map((reason, index) => (
+                          <p className="reason-missing" key={index}>
+                            <span>−</span> {reason}
+                          </p>
+                        ))}
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </fieldset>
           )}
@@ -325,46 +339,6 @@ function Home() {
               </div>
             </fieldset>
           )}
-
-          <fieldset className="events-output-fieldset">
-            <legend>Recent Activity</legend>
-
-            {events.length === 0 ? (
-              <p className="empty-state">No recent public events found.</p>
-            ) : (
-              <div className="events-table-wrapper">
-                <table className="events-list">
-                  <thead>
-                    <tr className="events-list-header">
-                      <th>Event Type</th>
-                      <th>Repository</th>
-                      <th>Created At</th>
-                      <th>Public</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {events.map((event, index) => (
-                      <tr key={index}>
-                        <td>{event.type}</td>
-                        <td>
-                          <a
-                            className="link"
-                            href={event.repository_url}
-                            target="_blank"
-                            rel="noreferrer"
-                          >
-                            {event.repository?.split("/")[1] || "Unknown"}
-                          </a>
-                        </td>
-                        <td>{new Date(event.created_at).toLocaleString()}</td>
-                        <td>{event.public ? "Yes" : "No"}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            )}
-          </fieldset>
         </div>
       </main>
     </>
