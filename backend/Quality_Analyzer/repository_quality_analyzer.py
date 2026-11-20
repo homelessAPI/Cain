@@ -426,7 +426,7 @@ class RepositoryQualityAnalyzer:
 
         # Account age is context, not a penalty. A young account can earn
         # a small recognition bonus when it already has a strong flagship project.
-        if account_age_days is not None and account_age_days <= 180:
+        if account_age_days is not None and account_age_days <= 183:
             if repo_quality and max(repo_quality) >= 80:
                 profile_score += 10
                 available_weight += 10
