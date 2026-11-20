@@ -546,7 +546,7 @@ function Home() {
                   )}
                 </div>
                 <div className="profile-signal-section">
-                  <h3>Languages detected</h3>
+                  <h3>Primary repository languages</h3>
                   <div className="profile-language-list">
                     {(quality.profile_level?.languages || []).length ? (
                       quality.profile_level.languages.map((language) => <span key={language}>{language}</span>)
