@@ -312,7 +312,7 @@ function Home() {
                   <span>Documentation: {quality.documentation_percentage}%</span>
                   <span>Maintenance: {quality.maintenance_percentage}%</span>
                   <span>Project hygiene: {quality.project_hygiene_percentage}%</span>
-                  <span>Profile level: {quality.profile_level?.internal_percentage ?? 0}%</span>
+                  <span>Profile Level: qualitative signals included in the average</span>
                 </div>
               </div>
               <p className="score-explanation">
