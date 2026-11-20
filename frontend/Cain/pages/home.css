@@ -194,13 +194,16 @@ fieldset {
     overflow-wrap: anywhere;
 }
 
-/* ---------- README Quality ---------- */
+/* ---------- Documentation and Maintenance Scores ---------- */
 
-.quality-output-fieldset {
+.quality-output-fieldset,
+.maintenance-output-fieldset {
     min-width: 0;
+    display: flex;
+    flex-direction: column;
 }
 
-.readme-total {
+.score-summary {
     text-align: center;
     padding-bottom: 22px;
     border-bottom: 1px solid #30363d;
@@ -238,28 +241,50 @@ fieldset {
     font-weight: 700;
 }
 
-.readme-score-explanation {
+.score-explanation {
     color: #8b949e;
     font-size: 13px;
     line-height: 1.5;
     margin: 5px auto 0;
-    max-width: 420px;
+    max-width: 460px;
 }
 
-.readme-repositories {
+.score-repositories {
     display: grid;
-    gap: 18px;
-    margin-top: 22px;
+    align-content: start;
+    gap: 14px;
+    margin-top: 18px;
+    max-height: 470px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    padding: 2px 8px 2px 2px;
+    scrollbar-width: thin;
+    scrollbar-color: #6366f1 #161b22;
 }
 
-.readme-repository {
-    padding: 17px;
+.score-repositories::-webkit-scrollbar {
+    width: 8px;
+}
+
+.score-repositories::-webkit-scrollbar-track {
+    background: #161b22;
+    border-radius: 10px;
+}
+
+.score-repositories::-webkit-scrollbar-thumb {
+    background: #6366f1;
+    border-radius: 10px;
+}
+
+.score-repository {
+    min-width: 0;
+    padding: 16px;
     background: rgba(255, 255, 255, .025);
     border: 1px solid #30363d;
     border-radius: 12px;
 }
 
-.readme-repository-header {
+.score-repository-header {
     display: flex;
     justify-content: space-between;
     align-items: flex-start;
@@ -267,20 +292,20 @@ fieldset {
     margin-bottom: 12px;
 }
 
-.readme-repository-header h3 {
+.score-repository-header h3 {
     color: #ffffff;
     font-size: 16px;
     margin: 0 0 7px;
     overflow-wrap: anywhere;
 }
 
-.readme-repository-header > strong {
+.score-repository-header > strong {
     color: #ffffff;
     font-size: 20px;
     white-space: nowrap;
 }
 
-.readme-grade {
+.score-grade {
     color: #c4b5fd;
     font-size: 12px;
 }
@@ -301,13 +326,17 @@ fieldset {
     transition: width .6s ease;
 }
 
-.readme-reasons {
+.maintenance-bar-fill {
+    background: linear-gradient(90deg, #0d9488, #34d399);
+}
+
+.score-reasons {
     display: grid;
     gap: 5px;
     margin-top: 13px;
 }
 
-.readme-reasons p {
+.score-reasons p {
     margin: 0;
     font-size: 13px;
     line-height: 1.5;
@@ -327,6 +356,18 @@ fieldset {
     display: inline-block;
     width: 15px;
     font-weight: 700;
+}
+
+.maintenance-details {
+    display: grid;
+    gap: 5px;
+    margin-top: 12px;
+    color: #c9d1d9;
+    font-size: 12px;
+}
+
+.maintenance-reason {
+    color: #8b949e;
 }
 
 /* ---------- Analysis ---------- */
@@ -439,6 +480,10 @@ fieldset {
         font-size: 18px;
     }
 
+    .score-repositories {
+        max-height: 420px;
+    }
+
     .analysis-grid {
         grid-template-columns: 1fr;
     }
@@ -480,5 +525,9 @@ fieldset {
 
     .quality-score-number {
         font-size: 36px;
+    }
+
+    .score-repository {
+        padding: 13px;
     }
 }
