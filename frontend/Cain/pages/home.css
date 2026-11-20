@@ -358,6 +358,10 @@ fieldset {
     font-weight: 700;
 }
 
+.maintenance-output-fieldset {
+    grid-column: 2;
+}
+
 .maintenance-details {
     display: grid;
     gap: 5px;
@@ -425,6 +429,7 @@ fieldset {
 
     .user-output-fieldset,
     .quality-output-fieldset,
+    .maintenance-output-fieldset,
     .analysis-output-fieldset {
         grid-column: 1;
         width: 100%;
