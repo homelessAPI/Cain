@@ -165,6 +165,7 @@ function Home() {
         )}
 
 
+
         <div className="output">
           <div className="profile-column">
             {user && (
@@ -200,9 +201,6 @@ function Home() {
               </div>
             </fieldset>
           )}
-
-          {quality && (
-            <>
             {(chartData.length > 0 || languages.length > 0) && (
             <fieldset className="analysis-output-fieldset">
               <legend>Activity Analysis</legend>
@@ -302,8 +300,7 @@ function Home() {
           </div>
           {quality && (
             <div className="assessment-column">
-              
-            <fieldset className="overall-score-fieldset">
+                          <fieldset className="overall-score-fieldset">
               <legend>Overall Repository Assessment</legend>
               <div className="overall-score-content">
                 <div>
@@ -325,9 +322,8 @@ function Home() {
                 improvement signals instead of a points total.
               </p>
             </fieldset>
-
               <div className="assessment-grid">
-                <fieldset className="quality-output-fieldset">
+                                <fieldset className="quality-output-fieldset">
                 <legend>Documentation</legend>
 
                 <div className="score-summary">
@@ -383,7 +379,7 @@ function Home() {
                   })}
                 </div>
               </fieldset>
-                <fieldset className="maintenance-output-fieldset">
+                                <fieldset className="maintenance-output-fieldset">
                 <legend>Maintenance</legend>
 
                 <div className="score-summary">
@@ -462,8 +458,7 @@ function Home() {
                   })}
                 </div>
               </fieldset>
-                
-              <fieldset className="hygiene-output-fieldset">
+                              <fieldset className="hygiene-output-fieldset">
                 <legend>Project Hygiene</legend>
                 <div className="score-summary">
                   <span className="quality-label">Project hygiene score</span>
@@ -517,9 +512,7 @@ function Home() {
                   ))}
                 </div>
               </fieldset>
-
-                
-              <fieldset className="profile-level-output-fieldset">
+                              <fieldset className="profile-level-output-fieldset">
                 <legend>Profile Level</legend>
                 <div className="score-summary">
                   <span className="quality-label">Profile assessment</span>
@@ -572,7 +565,6 @@ function Home() {
                 </div>
                 <p className="profile-data-note">{quality.profile_level?.note}</p>
               </fieldset>
-
               </div>
             </div>
           )}
