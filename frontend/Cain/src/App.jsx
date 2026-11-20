@@ -24,7 +24,6 @@ function App() {
       <Route path="/Review" element={<Review />} />
 
     </Routes>
-     <h1> test</h1>
     </BrowserRouter>
   )
 }
