@@ -18,23 +18,94 @@ class FetchData:
     # USER
     # -------------------------
 
-    def fetch_user_info(self):
-        response = requests.get(self.url)
-        #print(f"user_info: {self.url}")
+    def raise_github_error(self, response, context):
+        """Translate GitHub API failures into clear, consistent API errors."""
+        message = (response.text or "").lower()
+        remaining = response.headers.get("X-RateLimit-Remaining")
 
-        if response.status_code != 200:
+        if response.status_code == 404 and context == "user":
             raise HTTPException(
-                status_code=response.status_code,
-                detail="Failed to fetch user data"
+                status_code=404,
+                detail={
+                    "code": "GITHUB_USER_NOT_FOUND",
+                    "message": (
+                        f'No GitHub account was found for "{self.username}". '
+                        "Make sure you entered the username (the @handle/login), "
+                        "not the display name shown above it on the profile. "
+                        "You can find the username in the profile URL: "
+                        "github.com/username."
+                    )
+                }
             )
 
+        if response.status_code in (403, 429) and (
+            response.status_code == 429
+            or remaining == "0"
+            or "rate limit" in message
+            or "secondary rate" in message
+        ):
+            raise HTTPException(
+                status_code=429,
+                detail={
+                    "code": "GITHUB_RATE_LIMIT",
+                    "message": (
+                        "GitHub is temporarily limiting requests. "
+                        "Please wait a little while before trying again."
+                    )
+                }
+            )
+
+        if response.status_code >= 500:
+            raise HTTPException(
+                status_code=502,
+                detail={
+                    "code": "GITHUB_UNAVAILABLE",
+                    "message": (
+                        "GitHub is currently having trouble responding. "
+                        "Please try again in a few minutes."
+                    )
+                }
+            )
+
+        raise HTTPException(
+            status_code=502,
+            detail={
+                "code": "GITHUB_REQUEST_FAILED",
+                "message": f"Cain could not retrieve {context} from GitHub."
+            }
+        )
+
+    def fetch_user_info(self):
+        try:
+            response = requests.get(self.url, timeout=15)
+        except requests.RequestException as error:
+            raise HTTPException(
+                status_code=503,
+                detail={
+                    "code": "GITHUB_CONNECTION_FAILED",
+                    "message": (
+                        "Cain could not connect to GitHub. "
+                        "GitHub may be temporarily unavailable; please try again."
+                    )
+                }
+            ) from error
+
+        if response.status_code != 200:
+            self.raise_github_error(response, "user")
+
         data = response.json()
-        #print(f"User info data: {data}")
 
         if not data:
             raise HTTPException(
                 status_code=404,
-                detail="User profile is empty"
+                detail={
+                    "code": "GITHUB_USER_NOT_FOUND",
+                    "message": (
+                        f'No GitHub account was found for "{self.username}". '
+                        "Use the @username/login shown in the profile URL, "
+                        "not the display name at the top of the profile."
+                    )
+                }
             )
 
         return data
@@ -64,10 +135,7 @@ class FetchData:
         response = requests.get(self.events_url)
 
         if response.status_code != 200:
-            raise HTTPException(
-                status_code=response.status_code,
-                detail="Failed to retrieve event data"
-            )
+            self.raise_github_error(response, "activity data")
 
         data = response.json()
 
@@ -114,10 +182,7 @@ class FetchData:
             )
 
             if response.status_code != 200:
-                raise HTTPException(
-                    status_code=response.status_code,
-                    detail="Failed to retrieve repo data"
-                )
+                self.raise_github_error(response, "repository data")
 
             data = response.json()
 
