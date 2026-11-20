@@ -5,32 +5,26 @@ from services.dataCompile import FetchData
 class RepositoryQualityAnalyzer:
     def __init__(self, repo):
         self.repo = repo
-        self.analyser = RepoAnalyser(repo)
-
         owner = repo.get("owner", "")
         if isinstance(owner, dict):
             owner = owner.get("login", "")
-
         self.fetcher = FetchData(owner)
 
     def analyze_repository(self):
-        age = self.analyser.repository_age()
-        days_since_push = self.analyser.days_since_last_push()
-        activity_level = self.analyser.activity_level()
-
+        analyser = RepoAnalyser(self.repo)
         return {
-            "age_in_days": age,
-            "days_since_last_push": days_since_push,
-            "activity_level": activity_level
+            "age_in_days": analyser.repository_age(),
+            "days_since_last_push": analyser.days_since_last_push(),
+            "activity_level": analyser.activity_level()
         }
 
-    def readme_quality(self, contents_dict=None):
+    def documentation_quality(self, contents_dict=None):
         if contents_dict is None:
             contents_dict = self.fetcher.repo_contents()
 
-        readme_quality_dict = {}
-        repo_readme_score = {}
-        readme_reasons = {}
+        documentation_quality_dict = {}
+        repo_documentation_score = {}
+        documentation_reasons = {}
 
         sections = [
             "features",
@@ -41,20 +35,18 @@ class RepositoryQualityAnalyzer:
         ]
 
         for repo_name, readme_content in contents_dict.items():
-            repo_readme_score[repo_name] = 0
-            readme_reasons[repo_name] = {
+            repo_documentation_score[repo_name] = 0
+            documentation_reasons[repo_name] = {
                 "earned": [],
                 "missing": []
             }
 
             if not readme_content:
-                readme_quality_dict[repo_name] = "No README"
-
+                documentation_quality_dict[repo_name] = "No README"
                 for section in sections:
-                    readme_reasons[repo_name]["missing"].append(
+                    documentation_reasons[repo_name]["missing"].append(
                         f"Missing {section.title()} section."
                     )
-
                 continue
 
             lines = readme_content.lower().splitlines()
@@ -71,46 +63,65 @@ class RepositoryQualityAnalyzer:
 
                         for next_line in lines[index + 1:]:
                             next_heading = next_line.strip()
-
                             if next_heading.startswith("#"):
                                 break
-
                             if next_heading:
                                 section_has_content = True
                                 break
-
                         break
 
                 if section_found and section_has_content:
-                    repo_readme_score[repo_name] += 1
-                    readme_reasons[repo_name]["earned"].append(
+                    repo_documentation_score[repo_name] += 1
+                    documentation_reasons[repo_name]["earned"].append(
                         f"{section.title()}: section found with content."
                     )
                 elif section_found:
-                    readme_reasons[repo_name]["missing"].append(
+                    documentation_reasons[repo_name]["missing"].append(
                         f"{section.title()}: heading found, but no content follows it."
                     )
                 else:
-                    readme_reasons[repo_name]["missing"].append(
+                    documentation_reasons[repo_name]["missing"].append(
                         f"Missing {section.title()} section."
                     )
 
-            score = repo_readme_score[repo_name]
-
+            score = repo_documentation_score[repo_name]
             if score == 5:
-                readme_quality_dict[repo_name] = "Excellent"
+                documentation_quality_dict[repo_name] = "Excellent"
             elif score == 4:
-                readme_quality_dict[repo_name] = "Good"
+                documentation_quality_dict[repo_name] = "Good"
             elif score == 3:
-                readme_quality_dict[repo_name] = "Fair"
+                documentation_quality_dict[repo_name] = "Fair"
             else:
-                readme_quality_dict[repo_name] = "Needs work"
+                documentation_quality_dict[repo_name] = "Needs work"
 
-        total_readme_score = sum(repo_readme_score.values())
+        total_score = sum(repo_documentation_score.values())
 
         return (
-            readme_quality_dict,
-            repo_readme_score,
-            readme_reasons,
-            total_readme_score
+            documentation_quality_dict,
+            repo_documentation_score,
+            documentation_reasons,
+            total_score
         )
+
+    def maintenance_quality(self, repos, commit_activity):
+        maintenance_results = {}
+        total_score = 0
+        max_score = 0
+
+        for repo in repos:
+            repo_name = repo["Repo_name"]
+            activity = commit_activity.get(repo_name, {})
+            assessment = RepoAnalyser(repo).maintenance_assessment(activity)
+            maintenance_results[repo_name] = assessment
+
+            total_score += assessment["score"] or 0
+            max_score += assessment["max_score"]
+
+        percentage = round(total_score / max_score * 100, 1) if max_score else 0
+
+        return {
+            "repositories": maintenance_results,
+            "total_score": total_score,
+            "max_score": max_score,
+            "percentage": percentage
+        }
