@@ -40,9 +40,9 @@ def main(user: User):
     repos = fetcher.repos()
     repo_contents = fetcher.repo_contents(repos)
     commit_activity = fetcher.repo_commit_activity(repos)
-    repo_trees = fetcher.repo_trees(repos)
-    pull_requests = fetcher.pull_request_activity()
     pinned_repositories = fetcher.pinned_repositories()
+    repo_trees = fetcher.repo_trees(repos, pinned_repositories)
+    pull_requests = fetcher.pull_request_activity()
 
     profile_analyzer = GitHubAnalyzer(events, repos)
     weekly_usage = profile_analyzer.weekday_counter()
