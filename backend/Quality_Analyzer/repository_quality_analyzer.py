@@ -154,6 +154,7 @@ class RepositoryQualityAnalyzer:
             basenames = [path.rsplit("/", 1)[-1].lower() for path in paths]
             findings, good_signs, missing_signs = [], [], []
             deductions = 0.0
+            flagged_folders = set()
 
             def add_finding(path, severity, message, points):
                 nonlocal deductions
@@ -168,10 +169,27 @@ class RepositoryQualityAnalyzer:
                 basename = lowered.rsplit("/", 1)[-1]
                 segments = lowered.split("/")
 
-                if any(part in {"node_modules", "venv", ".venv", "__pycache__"} for part in segments):
-                    add_finding(path, "High", "Generated dependencies or Python cache files are committed.", 1.5)
-                elif any(part in {".idea", ".vscode"} for part in segments):
-                    add_finding(path, "Low", "Editor-specific settings are committed; consider whether they belong here.", 0.25)
+                generated_folder = next(
+                    (part for part in segments if part in {"node_modules", "venv", ".venv", "__pycache__"}),
+                    None
+                )
+                if generated_folder:
+                    folder_index = segments.index(generated_folder)
+                    folder_path = "/".join(segments[:folder_index + 1])
+                    if folder_path not in flagged_folders:
+                        add_finding(folder_path, "High", "Generated dependencies or Python cache files are committed.", 1.5)
+                        flagged_folders.add(folder_path)
+
+                editor_folder = next(
+                    (part for part in segments if part in {".idea", ".vscode"}),
+                    None
+                )
+                if editor_folder:
+                    folder_index = segments.index(editor_folder)
+                    folder_path = "/".join(segments[:folder_index + 1])
+                    if folder_path not in flagged_folders:
+                        add_finding(folder_path, "Low", "Editor-specific settings are committed; consider whether they belong here.", 0.25)
+                        flagged_folders.add(folder_path)
                 if basename == ".ds_store":
                     add_finding(path, "Low", "Operating-system metadata should not usually be committed.", 0.25)
 
@@ -189,8 +207,16 @@ class RepositoryQualityAnalyzer:
                 ):
                     add_finding(path, "Critical", "A filename commonly associated with private keys or credentials is tracked. Inspect it immediately.", 3)
 
-                if any(part in {"dist", "build"} for part in segments):
-                    add_finding(path, "Medium", "A generated build-output directory is tracked; confirm that this is intentional.", 0.75)
+                build_folder = next(
+                    (part for part in segments if part in {"dist", "build"}),
+                    None
+                )
+                if build_folder:
+                    folder_index = segments.index(build_folder)
+                    folder_path = "/".join(segments[:folder_index + 1])
+                    if folder_path not in flagged_folders:
+                        add_finding(folder_path, "Medium", "A generated build-output directory is tracked; confirm that this is intentional.", 0.75)
+                        flagged_folders.add(folder_path)
 
                 size = item.get("size") or 0
                 extension = "." + basename.rsplit(".", 1)[-1] if "." in basename else ""
@@ -254,13 +280,13 @@ class RepositoryQualityAnalyzer:
             else:
                 missing_signs.append("If environment variables are required, consider providing a safe .env.example.")
 
-            score = 4.5
-            score += 1.5 if has_gitignore else 0
+            score = 1.0
+            score += 2.0 if has_gitignore else 0
             score += 1.0 if has_license else 0
-            score += 1.0 if has_manifest else 0
-            score += 0.75 if has_lockfile else 0
-            score += 0.75 if has_quality_config else 0
-            score += 0.5 if has_env_example else 0
+            score += 2.0 if has_manifest else 0
+            score += 1.0 if has_lockfile else 0
+            score += 2.0 if has_quality_config else 0
+            score += 1.0 if has_env_example else 0
             score = max(0, min(10, round(score - deductions, 1)))
 
             results[repo_name] = {
