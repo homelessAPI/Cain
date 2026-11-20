@@ -72,14 +72,40 @@ function Home() {
         }
       );
 
-      const data = await response.json();
+      const data = await response.json().catch(() => ({}));
 
       if (!response.ok) {
         clearData();
-        setError(
-          data.detail ||
-          "An error occurred while fetching GitHub data."
-        );
+
+        const detail = data.detail;
+        const message =
+          typeof detail === "string"
+            ? detail
+            : detail?.message;
+
+        if (response.status === 404) {
+          setError(
+            message ||
+            `No GitHub account was found for "${requestData.username}". Use the @username/login shown in the profile URL, not the display name at the top of the profile.`
+          );
+        } else if (response.status === 429) {
+          setError(
+            message ||
+            "GitHub is temporarily limiting requests. Please wait a little while before trying again."
+          );
+        } else if (response.status === 502 || response.status === 503) {
+          setError(
+            message ||
+            "Cain could not retrieve data from GitHub. GitHub may be temporarily unavailable; please try again."
+          );
+        } else if (response.status >= 500) {
+          setError(
+            message ||
+            "Cain ran into an internal problem while analyzing this profile. Please try again later."
+          );
+        } else {
+          setError(message || "Cain could not complete the GitHub profile lookup.");
+        }
         return;
       }
 
@@ -114,7 +140,9 @@ function Home() {
     } catch (error) {
       console.error(error);
       clearData();
-      setError("Unable to connect to the Cain backend.");
+      setError(
+        "Unable to connect to Cain. The backend may be offline or unreachable; please try again later."
+      );
     } finally {
       setLoading(false);
     }
