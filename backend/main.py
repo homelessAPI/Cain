@@ -40,6 +40,9 @@ def main(user: User):
     repos = fetcher.repos()
     repo_contents = fetcher.repo_contents(repos)
     commit_activity = fetcher.repo_commit_activity(repos)
+    repo_trees = fetcher.repo_trees(repos)
+    pull_requests = fetcher.pull_request_activity()
+    pinned_repositories = fetcher.pinned_repositories()
 
     profile_analyzer = GitHubAnalyzer(events, repos)
     weekly_usage = profile_analyzer.weekday_counter()
@@ -59,6 +62,11 @@ def main(user: User):
             repos,
             commit_activity
         )
+        project_hygiene = quality_analyzer.project_hygiene_quality(repos, repo_trees)
+        profile_level = quality_analyzer.profile_level_assessment(
+            user_profile, repos, events, pull_requests, pinned_repositories,
+            documentation_scores, project_hygiene
+        )
     else:
         documentation_quality = {}
         documentation_scores = {}
@@ -70,12 +78,30 @@ def main(user: User):
             "max_score": 0,
             "percentage": 0
         }
+        project_hygiene = {
+            "repositories": {}, "total_score": 0, "max_score": 0,
+            "percentage": 0, "scanned_count": 0, "total_count": 0
+        }
+        profile_level = {
+            "internal_percentage": 0, "level": "Insufficient data",
+            "strengths": [],
+            "improvements": ["No repositories were available to assess this profile."]
+        }
 
     max_documentation_score = len(repo_contents) * 5
     documentation_percentage = (
         round(total_documentation_score / max_documentation_score * 100, 1)
         if max_documentation_score else 0
     )
+
+    assessment_scores = [
+        documentation_percentage,
+        maintenance["percentage"],
+        project_hygiene["percentage"],
+        profile_level["internal_percentage"]
+    ]
+    overall_percentage = round(sum(assessment_scores) / 4, 1)
+    overall_grade = "A" if overall_percentage >= 85 else "B" if overall_percentage >= 70 else "C"
 
     print(f"analyser: {time.time() - start:.2f}s")
 
@@ -92,6 +118,15 @@ def main(user: User):
         "maintenance_total_score": maintenance["total_score"],
         "maintenance_max_score": maintenance["max_score"],
         "maintenance_percentage": maintenance["percentage"],
+        "project_hygiene": project_hygiene["repositories"],
+        "project_hygiene_total_score": project_hygiene["total_score"],
+        "project_hygiene_max_score": project_hygiene["max_score"],
+        "project_hygiene_percentage": project_hygiene["percentage"],
+        "project_hygiene_scanned_count": project_hygiene["scanned_count"],
+        "project_hygiene_total_count": project_hygiene["total_count"],
+        "profile_level": profile_level,
+        "overall_percentage": overall_percentage,
+        "overall_grade": overall_grade,
         "Weekly_usage": weekly_usage,
         "languages": languages,
         "users": user_profile,
