@@ -91,12 +91,16 @@ function Home() {
       setLanguages(data.languages || []);
 
       setQuality({
-        readme_quality: data.readme_quality || {},
-        readme_scores: data.readme_scores || {},
-        readme_reasons: data.readme_reasons || {},
-        total_readme_score: data.total_readme_score || 0,
-        max_readme_score: data.max_readme_score || 0,
-        readme_percentage: data.readme_percentage || 0
+        documentation_quality: data.documentation_quality || {},
+        documentation_scores: data.documentation_scores || {},
+        documentation_reasons: data.documentation_reasons || {},
+        total_documentation_score: data.total_documentation_score || 0,
+        max_documentation_score: data.max_documentation_score || 0,
+        documentation_percentage: data.documentation_percentage || 0,
+        maintenance: data.maintenance || {},
+        maintenance_total_score: data.maintenance_total_score || 0,
+        maintenance_max_score: data.maintenance_max_score || 0,
+        maintenance_percentage: data.maintenance_percentage || 0
       });
     } catch (error) {
       console.error(error);
@@ -107,8 +111,12 @@ function Home() {
     }
   }
 
-  const readmeResults = quality
-    ? Object.entries(quality.readme_scores || {})
+  const documentationResults = quality
+    ? Object.entries(quality.documentation_scores || {})
+    : [];
+
+  const maintenanceResults = quality
+    ? Object.entries(quality.maintenance || {})
     : [];
 
   return (
@@ -179,68 +187,144 @@ function Home() {
           )}
 
           {quality && (
-            <fieldset className="quality-output-fieldset">
-              <legend>README Quality</legend>
+            <>
+              <fieldset className="quality-output-fieldset">
+                <legend>Documentation</legend>
 
-              <div className="readme-total">
-                <span className="quality-label">Total README score</span>
-
-                <div className="quality-score-number">
-                  {quality.total_readme_score}
-                  <span>/{quality.max_readme_score}</span>
+                <div className="score-summary">
+                  <span className="quality-label">Total documentation score</span>
+                  <div className="quality-score-number">
+                    {quality.total_documentation_score}
+                    <span>/{quality.max_documentation_score}</span>
+                  </div>
+                  <div className="quality-grade">
+                    {quality.documentation_percentage}% across all repositories
+                  </div>
+                  <p className="score-explanation">
+                    Each repository can earn 5 points: one for each README section
+                    (Features, Installation, Usage, Tech Stack, and License) that
+                    exists and contains content.
+                  </p>
                 </div>
 
-                <div className="quality-grade">
-                  {quality.readme_percentage}% across all repositories
+                <div className="score-repositories" aria-label="Individual documentation scores">
+                  {documentationResults.map(([repoName, score]) => {
+                    const reasons = quality.documentation_reasons?.[repoName] || {};
+                    const grade = quality.documentation_quality?.[repoName] || "N/A";
+
+                    return (
+                      <div className="score-repository" key={repoName}>
+                        <div className="score-repository-header">
+                          <div>
+                            <h3>{repoName}</h3>
+                            <span className="score-grade">{grade}</span>
+                          </div>
+                          <strong>{score}/5</strong>
+                        </div>
+                        <div className="quality-bar-background">
+                          <div
+                            className="quality-bar-fill"
+                            style={{ width: `${score * 20}%` }}
+                          />
+                        </div>
+                        <div className="score-reasons">
+                          {(reasons.earned || []).map((reason, index) => (
+                            <p className="reason-earned" key={index}>
+                              <span>+</span> {reason}
+                            </p>
+                          ))}
+                          {(reasons.missing || []).map((reason, index) => (
+                            <p className="reason-missing" key={index}>
+                              <span>−</span> {reason}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </fieldset>
+
+              <fieldset className="maintenance-output-fieldset">
+                <legend>Maintenance</legend>
+
+                <div className="score-summary">
+                  <span className="quality-label">Total maintenance score</span>
+                  <div className="quality-score-number">
+                    {quality.maintenance_total_score}
+                    <span>/{quality.maintenance_max_score}</span>
+                  </div>
+                  <div className="quality-grade">
+                    {quality.maintenance_percentage}% across eligible repositories
+                  </div>
+                  <p className="score-explanation">
+                    Each active repository can earn up to 10 points: 5 for how
+                    recently it was pushed to and 5 for commit activity across
+                    the last six months. Archived repositories are excluded.
+                    If commit history cannot be retrieved, only the 5 recency
+                    points are scored.
+                  </p>
                 </div>
 
-                <p className="readme-score-explanation">
-                  Each README can earn 5 points: one for each section that
-                  exists and contains content.
-                </p>
-              </div>
+                <div className="score-repositories" aria-label="Individual maintenance scores">
+                  {maintenanceResults.map(([repoName, result]) => {
+                    const score = result.score;
+                    const maxScore = result.max_score;
+                    const scorePercent = maxScore ? (score / maxScore) * 100 : 0;
 
-              <div className="readme-repositories">
-                {readmeResults.map(([repoName, score]) => {
-                  const reasons = quality.readme_reasons?.[repoName] || {};
-                  const grade = quality.readme_quality?.[repoName] || "N/A";
-
-                  return (
-                    <div className="readme-repository" key={repoName}>
-                      <div className="readme-repository-header">
-                        <div>
-                          <h3>{repoName}</h3>
-                          <span className="readme-grade">{grade}</span>
+                    return (
+                      <div className="score-repository" key={repoName}>
+                        <div className="score-repository-header">
+                          <div>
+                            <h3>{repoName}</h3>
+                            <span className="score-grade">{result.grade}</span>
+                          </div>
+                          <strong>
+                            {score === null ? "—" : `${score}/${maxScore}`}
+                          </strong>
                         </div>
 
-                        <strong>{score}/5</strong>
-                      </div>
+                        {maxScore > 0 && (
+                          <div className="quality-bar-background">
+                            <div
+                              className="quality-bar-fill maintenance-bar-fill"
+                              style={{ width: `${scorePercent}%` }}
+                            />
+                          </div>
+                        )}
 
-                      <div className="quality-bar-background">
-                        <div
-                          className="quality-bar-fill"
-                          style={{ width: `${score * 20}%` }}
-                        />
-                      </div>
+                        <div className="maintenance-details">
+                          <span>
+                            Last push: {result.days_since_last_push === null
+                              ? "Unknown"
+                              : result.days_since_last_push === 0
+                                ? "Today"
+                                : `${result.days_since_last_push} days ago`}
+                          </span>
+                          <span>
+                            Commit activity: {result.active_months === null
+                              ? "Unavailable"
+                              : `${result.active_months}/6 active months`}
+                          </span>
+                          <span>
+                            Commits observed: {result.commits_last_six_months === null
+                              ? "Unavailable"
+                              : result.commits_last_six_months}
+                            {result.history_capped ? " (retrieval limit reached)" : ""}
+                          </span>
+                        </div>
 
-                      <div className="readme-reasons">
-                        {(reasons.earned || []).map((reason, index) => (
-                          <p className="reason-earned" key={index}>
-                            <span>+</span> {reason}
-                          </p>
-                        ))}
-
-                        {(reasons.missing || []).map((reason, index) => (
-                          <p className="reason-missing" key={index}>
-                            <span>−</span> {reason}
-                          </p>
-                        ))}
+                        <div className="score-reasons">
+                          {(result.reasons || []).map((reason, index) => (
+                            <p className="maintenance-reason" key={index}>{reason}</p>
+                          ))}
+                        </div>
                       </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </fieldset>
+                    );
+                  })}
+                </div>
+              </fieldset>
+            </>
           )}
 
           {(chartData.length > 0 || languages.length > 0) && (
