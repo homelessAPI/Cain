@@ -1,5 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import JSONResponse
+from requests import RequestException
 
 from services.analyser import GitHubAnalyzer
 from services.dataCompile import FetchData
@@ -10,6 +12,39 @@ import time
 
 
 app = FastAPI()
+
+
+@app.exception_handler(RequestException)
+async def github_connection_error(request: Request, exc: RequestException):
+    return JSONResponse(
+        status_code=503,
+        content={
+            "detail": {
+                "code": "GITHUB_CONNECTION_FAILED",
+                "message": (
+                    "Cain could not connect to GitHub. "
+                    "GitHub may be temporarily unavailable; please try again."
+                )
+            }
+        }
+    )
+
+
+@app.exception_handler(Exception)
+async def cain_internal_error(request: Request, exc: Exception):
+    print(f"Cain internal error: {exc}")
+    return JSONResponse(
+        status_code=500,
+        content={
+            "detail": {
+                "code": "CAIN_INTERNAL_ERROR",
+                "message": (
+                    "Cain ran into an internal problem while analyzing this profile. "
+                    "Please try again later."
+                )
+            }
+        }
+    )
 
 
 app.add_middleware(
