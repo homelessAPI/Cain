@@ -1,5 +1,5 @@
 from fastapi import HTTPException
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 import requests
 import base64
 
@@ -160,6 +160,7 @@ class FetchData:
                 "default_branch": repo["default_branch"],
                 "open_issues_count": repo["open_issues_count"],
                 "pushed_at": repo["pushed_at"],
+                "archived": repo["archived"],
                 "owner": repo["owner"]["login"],
                 "language": repo["language"],
                 "repo_url": repo["html_url"]
@@ -167,6 +168,97 @@ class FetchData:
 
             
         return repos_list
+
+
+    # -------------------------
+    # COMMIT HISTORY
+    # -------------------------
+
+    def repo_commit_activity(self, repos_list):
+        """
+        Collect up to 100 commits from the last six months for each repository.
+        Active months are used as a simple measure of contribution frequency.
+        """
+        since = datetime.now(timezone.utc) - timedelta(days=183)
+        activity = {}
+
+        for repo in repos_list:
+            repo_name = repo["Repo_name"]
+
+            if repo.get("archived"):
+                activity[repo_name] = {
+                    "available": False,
+                    "archived": True,
+                    "commit_count": 0,
+                    "active_months": 0,
+                    "history_capped": False
+                }
+                continue
+
+            commits_url = (
+                f"https://api.github.com/repos/{self.username}/"
+                f"{repo_name}/commits"
+            )
+
+            try:
+                response = requests.get(
+                    commits_url,
+                    params={
+                        "since": since.isoformat(),
+                        "per_page": 100,
+                        "sha": repo.get("default_branch", "main")
+                    },
+                    timeout=15
+                )
+
+                if response.status_code != 200:
+                    activity[repo_name] = {
+                        "available": False,
+                        "archived": False,
+                        "commit_count": 0,
+                        "active_months": 0,
+                        "history_capped": False
+                    }
+                    continue
+
+                commits = response.json()
+                active_months = set()
+
+                for commit in commits:
+                    commit_data = commit.get("commit", {})
+                    author_data = commit_data.get("author") or {}
+                    committer_data = commit_data.get("committer") or {}
+                    commit_date = (
+                        author_data.get("date")
+                        or committer_data.get("date")
+                    )
+
+                    if not commit_date:
+                        continue
+
+                    parsed_date = datetime.fromisoformat(
+                        commit_date.replace("Z", "+00:00")
+                    )
+                    active_months.add(parsed_date.strftime("%Y-%m"))
+
+                activity[repo_name] = {
+                    "available": True,
+                    "archived": False,
+                    "commit_count": len(commits),
+                    "active_months": len(active_months),
+                    "history_capped": len(commits) == 100
+                }
+
+            except (requests.RequestException, ValueError, TypeError):
+                activity[repo_name] = {
+                    "available": False,
+                    "archived": False,
+                    "commit_count": 0,
+                    "active_months": 0,
+                    "history_capped": False
+                }
+
+        return activity
 
     # -------------------------
     # REPOSITORY CONTENTS
