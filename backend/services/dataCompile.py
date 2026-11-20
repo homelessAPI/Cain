@@ -332,7 +332,7 @@ class FetchData:
                 response = requests.get(
                     url,
                     params={
-                        "q": f"author:{self.username} type:pr{qualifier}",
+                        "q": f"author:{self.username} is:pr{qualifier}",
                         "per_page": 1
                     },
                     headers=headers,
