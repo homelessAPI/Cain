@@ -2,6 +2,7 @@ from fastapi import HTTPException
 from datetime import datetime, timedelta, timezone
 import requests
 import base64
+import re
 
 
 class FetchData:
@@ -48,7 +49,11 @@ class FetchData:
             "public_repos": data["public_repos"],
             "company": data["company"],
             "hireable": data["hireable"],
-            "bio": data["bio"]
+            "bio": data["bio"],
+            "login": data["login"],
+            "name": data.get("name"),
+            "created_at": data["created_at"],
+            "location": data.get("location")
         }
 
     # -------------------------
@@ -163,7 +168,9 @@ class FetchData:
                 "archived": repo["archived"],
                 "owner": repo["owner"]["login"],
                 "language": repo["language"],
-                "repo_url": repo["html_url"]
+                "repo_url": repo["html_url"],
+                "license": (repo.get("license") or {}).get("spdx_id"),
+                "fork": repo.get("fork", False)
             })
 
             
@@ -259,6 +266,122 @@ class FetchData:
                 }
 
         return activity
+
+
+    # -------------------------
+    # PROJECT FILE TREES
+    # -------------------------
+
+    def repo_trees(self, repos_list, limit=30):
+        """Fetch file paths and sizes for project-hygiene checks."""
+        trees = {}
+        scanned_repos = sorted(
+            repos_list,
+            key=lambda repo: repo.get("pushed_at") or "",
+            reverse=True
+        )[:limit]
+
+        for repo in scanned_repos:
+            repo_name = repo["Repo_name"]
+            branch = repo.get("default_branch") or "main"
+            tree_url = (
+                f"https://api.github.com/repos/{self.username}/"
+                f"{repo_name}/git/trees/{branch}"
+            )
+
+            try:
+                response = requests.get(
+                    tree_url,
+                    params={"recursive": "1"},
+                    timeout=15
+                )
+                if response.status_code != 200:
+                    trees[repo_name] = {"available": False, "files": [], "truncated": False}
+                    continue
+
+                tree_data = response.json()
+                trees[repo_name] = {
+                    "available": True,
+                    "files": [
+                        item for item in tree_data.get("tree", [])
+                        if item.get("type") == "blob"
+                    ],
+                    "truncated": tree_data.get("truncated", False)
+                }
+            except (requests.RequestException, ValueError):
+                trees[repo_name] = {"available": False, "files": [], "truncated": False}
+
+        return {
+            "repositories": trees,
+            "scanned_count": len(trees),
+            "total_count": len(repos_list),
+            "scan_limit": limit
+        }
+
+    # -------------------------
+    # PROFILE SIGNALS
+    # -------------------------
+
+    def pull_request_activity(self):
+        url = "https://api.github.com/search/issues"
+        headers = {"Accept": "application/vnd.github+json"}
+        counts = {}
+
+        for label, qualifier in [("total", ""), ("merged", " is:merged")]:
+            try:
+                response = requests.get(
+                    url,
+                    params={
+                        "q": f"author:{self.username} type:pr{qualifier}",
+                        "per_page": 1
+                    },
+                    headers=headers,
+                    timeout=12
+                )
+                counts[label] = (
+                    response.json().get("total_count", 0)
+                    if response.status_code == 200 else None
+                )
+            except (requests.RequestException, ValueError):
+                counts[label] = None
+
+        counts["available"] = counts["total"] is not None
+        return counts
+
+    def pinned_repositories(self):
+        """
+        Pinned repositories are not exposed by GitHub's public REST API.
+        Inspect the public profile page and return None if unavailable.
+        """
+        try:
+            response = requests.get(
+                f"https://github.com/{self.username}",
+                headers={"User-Agent": "Cain-GitHub-Analyzer"},
+                timeout=12
+            )
+            if response.status_code != 200:
+                return None
+
+            cards = re.findall(
+                r'pinned-item-list-item-content(.*?)(?=pinned-item-list-item-content|</li>)',
+                response.text,
+                flags=re.IGNORECASE | re.DOTALL
+            )
+            pinned = []
+
+            for card in cards:
+                match = re.search(
+                    r'href="/([A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+)"',
+                    card
+                )
+                if match:
+                    repo_name = match.group(1).rstrip("/")
+                    if repo_name not in pinned:
+                        pinned.append(repo_name)
+
+            return pinned
+        except requests.RequestException:
+            return None
 
     # -------------------------
     # REPOSITORY CONTENTS
