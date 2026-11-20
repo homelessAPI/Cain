@@ -374,18 +374,15 @@ class RepositoryQualityAnalyzer:
         else:
             improvements.append("A standout project could not be assessed because repository file data was unavailable.")
 
-        age_bonus = 0
-        if account_age_days is not None:
-            if account_age_days <= 180 and repo_quality and max(repo_quality) >= 80:
-                age_bonus = 10
+        # Account age is context, not a penalty. A young account can earn
+        # a small recognition bonus when it already has a strong flagship project.
+        if account_age_days is not None and account_age_days <= 180:
+            if repo_quality and max(repo_quality) >= 80:
+                profile_score += 10
+                available_weight += 10
                 strengths.append("Strong project presentation on a young account is recognized as early achievement.")
-            elif account_age_days > 180 and repo_quality and max(repo_quality) >= 90:
-                age_bonus = 10
-                strengths.append("A highly polished flagship project demonstrates strong profile presentation.")
-            elif account_age_days <= 180:
-                improvements.append("For a newer account, a polished flagship repository is a particularly useful way to demonstrate progress.")
-        profile_score += age_bonus
-        available_weight += 10
+            else:
+                improvements.append("For a newer account, a polished flagship repository can demonstrate strong early progress.")
 
         percentage = round(profile_score / available_weight * 100, 1) if available_weight else 0
         level = "Strong profile" if percentage >= 85 else "Developing profile" if percentage >= 70 else "Profile needs attention"
