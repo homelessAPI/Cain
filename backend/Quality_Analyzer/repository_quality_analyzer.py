@@ -361,11 +361,44 @@ class RepositoryQualityAnalyzer:
         else:
             improvements.append("Little or no recent public contribution activity was visible. GitHub's public events endpoint is limited to recent activity, not lifetime contributions.")
 
+        repo_quality_by_name = {}
+        for repo in repos:
+            name = repo["Repo_name"]
+            doc_score = documentation_scores.get(name)
+            hygiene = hygiene_results.get("repositories", {}).get(name, {})
+            hygiene_score = hygiene.get("score")
+
+            if doc_score is not None and hygiene_score is not None:
+                repo_quality_by_name[name.lower()] = (
+                    doc_score / 5 * 100 + hygiene_score / 10 * 100
+                ) / 2
+
+        repo_quality = list(repo_quality_by_name.values())
+
         if pinned_repositories is not None:
-            available_weight += 15
+            available_weight += 10
             if pinned_repositories:
-                profile_score += 15
+                profile_score += 5
+                profile_score += min(len(pinned_repositories), 3) / 3 * 5
                 strengths.append(f"{len(pinned_repositories)} pinned repository/repositories found.")
+
+                pinned_scores = [
+                    repo_quality_by_name[name.rsplit("/", 1)[-1].lower()]
+                    for name in pinned_repositories
+                    if name.rsplit("/", 1)[-1].lower() in repo_quality_by_name
+                ]
+
+                if pinned_scores:
+                    pinned_average = sum(pinned_scores) / len(pinned_scores)
+                    profile_score += pinned_average / 100 * 5
+                    available_weight += 5
+
+                    if pinned_average >= 80:
+                        strengths.append("Your pinned repositories have strong documentation and project hygiene.")
+                    else:
+                        improvements.append("Some pinned repositories have weak documentation or project hygiene. Improve the projects you feature most prominently.")
+                else:
+                    improvements.append("Pinned repositories were found, but their quality could not be compared with the repositories Cain inspected.")
             else:
                 improvements.append("No pinned repositories were detected. Pin your strongest projects so visitors can find your best work quickly.")
         else:
@@ -374,20 +407,11 @@ class RepositoryQualityAnalyzer:
         profile_score += min(len(languages) / 4, 1) * 15
         available_weight += 15
         if len(languages) >= 2:
-            strengths.append(f"{len(languages)} programming languages detected across public repositories.")
+            strengths.append(f"{len(languages)} primary repository languages detected across public repositories.")
         elif len(languages) == 1:
             improvements.append(f"Only {languages[0]} was detected as a primary repository language. Demonstrate depth first; additional languages are optional.")
         else:
             improvements.append("No primary programming languages were detected across public repositories.")
-
-        repo_quality = []
-        for repo in repos:
-            name = repo["Repo_name"]
-            doc_score = documentation_scores.get(name)
-            hygiene = hygiene_results.get("repositories", {}).get(name, {})
-            hygiene_score = hygiene.get("score")
-            if doc_score is not None and hygiene_score is not None:
-                repo_quality.append((doc_score / 5 * 100 + hygiene_score / 10 * 100) / 2)
 
         if repo_quality:
             best_project = max(repo_quality)
