@@ -272,14 +272,27 @@ class FetchData:
     # PROJECT FILE TREES
     # -------------------------
 
-    def repo_trees(self, repos_list, limit=30):
-        """Fetch file paths and sizes for project-hygiene checks."""
+    def repo_trees(self, repos_list, pinned_repositories=None, limit=30):
+        """Fetch file paths and sizes, prioritizing recent and pinned projects."""
         trees = {}
-        scanned_repos = sorted(
+        recent_repos = sorted(
             repos_list,
             key=lambda repo: repo.get("pushed_at") or "",
             reverse=True
         )[:limit]
+
+        pinned_names = {
+            name.rsplit("/", 1)[-1].lower()
+            for name in (pinned_repositories or [])
+        }
+        pinned_repos = [
+            repo for repo in repos_list
+            if repo["Repo_name"].lower() in pinned_names
+        ]
+        selected_repos = {
+            repo["Repo_name"]: repo for repo in recent_repos + pinned_repos
+        }
+        scanned_repos = list(selected_repos.values())
 
         for repo in scanned_repos:
             repo_name = repo["Repo_name"]
