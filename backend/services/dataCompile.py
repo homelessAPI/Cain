@@ -123,11 +123,28 @@ class FetchData:
             page += 1
 
         return all_repos
+    
+    def fetch_repo_contents(self, repo_name):
+        branch = "main"  
+        repo_contents_url = f"https://api.github.com/repos/{self.username}/{repo_name}/git/trees/{branch}?recursive=1"
 
+        response = requests.get(
+            repo_contents_url.format(repo_name=repo_name)
+        )
+
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail=f"Failed to retrieve contents for repo: {repo_name}"
+            )
+
+        data = response.json()
+
+        return data
+    
     def repos(self):
         repos_data = self.fetch_repos()
         repos_list = []
-        Readme_dict = {}
 
         for repo in repos_data:
             repos_list.append({
@@ -156,6 +173,10 @@ class FetchData:
     # -------------------------
 
     def repo_contents(self, repos_list=None):
+
+        repos_contents = self.fetch_repos() if repos_list is None else repos_list
+        print(f"repos_contents: {repos_contents}")
+
         if repos_list is None:
             repos_list = self.repos()
         Readme_dict = {}
