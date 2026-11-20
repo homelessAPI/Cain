@@ -19,3 +19,4 @@ URL = https://cain-sable.vercel.app/
 - Ver 2.5: (AI Review system implemented)
 - Ver 2.6: (Changed ollama to gemini)
 - Ver 3.0: (Beta-Repository scoring system added)
+- Ver 4.0: (Removedthe AI review and fleshed out the scoring system)
