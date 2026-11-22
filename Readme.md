@@ -71,7 +71,6 @@ To run Cain on your local machine:
 4. View the returned activity and repository information.
 5. Explore the repository scoring system to get an idea of the repository's overall quality.
 
-## Preview:
 
 
 
