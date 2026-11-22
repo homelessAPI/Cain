@@ -259,15 +259,15 @@ function Home() {
                         <XAxis dataKey="day" tick={{ fill: "#8b949e", fontSize: 12 }} />
                         <YAxis allowDecimals={false} tick={{ fill: "#8b949e" }} />
                         <Tooltip
-                          cursor={{ fill: "rgba(99,102,241,0.1)" }}
+                          cursor={{ fill: "rgba(47,129,247,0.12)" }}
                           contentStyle={{
-                            backgroundColor: "#ffffff",
+                            backgroundColor: "#161b22",
                             borderRadius: "10px",
-                            border: "1px solid #d1d5db",
+                            border: "1px solid #30363d",
                             boxShadow: "0 8px 20px rgba(0,0,0,.18)"
                           }}
-                          labelStyle={{ color: "#111827", fontWeight: "600" }}
-                          itemStyle={{ color: "#374151" }}
+                          labelStyle={{ color: "#e6edf3", fontWeight: "600" }}
+                          itemStyle={{ color: "#c9d1d9" }}
                         />
                         <Bar
                           dataKey="events"
@@ -307,13 +307,13 @@ function Home() {
                             <Cell
                               key={index}
                               fill={[
-                                "#6366f1",
-                                "#8b5cf6",
-                                "#ec4899",
-                                "#f59e0b",
-                                "#10b981",
-                                "#06b6d4",
-                                "#ef4444"
+                                "#2f81f7",
+                                "#3fb950",
+                                "#a371f7",
+                                "#d29922",
+                                "#f85149",
+                                "#39c5cf",
+                                "#8b949e"
                               ][index % 7]}
                             />
                           ))}
