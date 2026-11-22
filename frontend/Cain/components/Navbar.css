@@ -3,7 +3,7 @@
     background-color: #0d1117;
 
     border-bottom:
-        1px solid #47445d;
+        1px solid #30363d;
 
     box-shadow:
         0 1px 3px rgba(0, 0, 0, .25);
@@ -33,7 +33,7 @@
 
     margin: 0;
 
-    color: white;
+    color: #e6edf3;
 
     font-size: 1.5rem;
 
@@ -73,7 +73,7 @@
 
     color: white;
 
-    background-color: #47445d;
+    background-color: #21262d;
 
     padding:
         5px 10px;
