@@ -1,17 +1,17 @@
-# Python virtual environment
-backend/.venv/
-
 # Python cache
 __pycache__/
-*.pyc
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+env/
 
 # Environment variables
 .env
+.env.*
 
-# Frontend
-frontend/node_modules/
-frontend/dist/
-
-backend\services\Datasets
-
-Brainstorm
+# IDE
+.vscode/
+.idea/

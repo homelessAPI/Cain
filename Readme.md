@@ -2,11 +2,11 @@
 
 ## Description
 
-This for now just fetches the users activity after entering the user name and displays it.
+Cain is a GitHub repository analyzer that evaluates the quality of a developer's projects and GitHub profile. It looks at four main areas: documentation, maintenance, project hygiene, and profile level. Each area is evaluated and given a score to help developers understand what's working well and what needs improvement. The goal is to give developers a better understanding of how their projects are presented, maintained, and organized.
 
 ## Test / User
 
-- The website has been launched so just click the link below to try it out. URL = [https://cain-sable.vercel.app/](https://cain-sable.vercel.app/)
+- The website has been launched so just click the link below to try it out. URL = [https://cain-sable.vercel.app/]
 
 ## Technologies used
 
